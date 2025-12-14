@@ -1,73 +1,66 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { registerUser, loginUser } from "../services/api";
+import { loginSchema, registerSchema } from "../lib/schemas";
 
 /**
  * Auth - Trang đăng nhập và đăng ký
  * - 2 tabs: Login / Register
- * - Shared form layout
+ * - Sử dụng react-hook-form với Zod validation
  * Located in: src/pages/ (theo README structure)
  */
 
 export function Auth() {
-    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState("login"); // "login" or "register"
-
-    // Form states
-    const [formData, setFormData] = useState({
-        username: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-    });
-    const [error, setError] = useState("");
+    const [apiError, setApiError] = useState("");
     const [success, setSuccess] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
-    // Handle input change
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
-        setError("");
+    // Get the correct schema based on active tab
+    const currentSchema = activeTab === "login" ? loginSchema : registerSchema;
+
+    // Setup react-hook-form with zodResolver
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        reset,
+    } = useForm({
+        resolver: zodResolver(currentSchema),
+        mode: "onBlur", // Validate on blur
+    });
+
+    // Reset form when schema changes (tab switch)
+    useEffect(() => {
+        reset();
+        setApiError("");
         setSuccess("");
-    };
+    }, [activeTab, reset]);
 
-    // Handle form submit
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError("");
+    // Handle form submission (only runs if validation passes)
+    const onSubmit = async (data) => {
+        setApiError("");
         setSuccess("");
-
-        // Validation
-        if (activeTab === "register") {
-            if (formData.password !== formData.confirmPassword) {
-                setError("Passwords do not match");
-                return;
-            }
-            if (formData.password.length < 6) {
-                setError("Password must be at least 6 characters");
-                return;
-            }
-        }
-
         setIsLoading(true);
 
         try {
             if (activeTab === "register") {
                 // Call register API
                 await registerUser({
-                    username: formData.username,
-                    email: formData.email,
-                    password: formData.password,
+                    username: data.username,
+                    email: data.email,
+                    password: data.password,
                 });
                 setSuccess("Registration successful! Please login.");
                 // Switch to login tab after success
                 setTimeout(() => {
-                    switchTab("login");
+                    setActiveTab("login");
                 }, 1500);
             } else {
                 // Call login API
-                const result = await loginUser(formData.username, formData.password);
+                const result = await loginUser(data.username, data.password);
                 // Lưu token vào localStorage
                 if (result.token) {
                     localStorage.setItem("authToken", result.token);
@@ -82,18 +75,23 @@ export function Auth() {
                 }, 1000);
             }
         } catch (err) {
-            setError(err.message || "Something went wrong");
+            setApiError(err.message || "Something went wrong");
         } finally {
             setIsLoading(false);
         }
     };
 
-    // Switch tab and reset form
+    // Switch tab
     const switchTab = (tab) => {
         setActiveTab(tab);
-        setFormData({ username: "", email: "", password: "", confirmPassword: "" });
-        setError("");
     };
+
+    // Common input classes
+    const inputClass = (hasError) =>
+        `w-full px-4 py-2 border rounded-lg bg-white dark:bg-slate-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500 ${hasError
+            ? "border-red-500 focus:ring-red-500"
+            : "border-gray-300 dark:border-slate-500"
+        }`;
 
     return (
         <main className="flex-1 bg-gray-100 dark:bg-slate-800 transition-colors flex items-center justify-center p-4">
@@ -112,19 +110,21 @@ export function Auth() {
                     {/* Tabs */}
                     <div className="flex">
                         <button
+                            type="button"
                             onClick={() => switchTab("login")}
                             className={`flex-1 py-3 text-center font-medium transition-colors ${activeTab === "login"
-                                ? "bg-sky-500 text-white"
-                                : "bg-gray-100 dark:bg-slate-600 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-500"
+                                    ? "bg-sky-500 text-white"
+                                    : "bg-gray-100 dark:bg-slate-600 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-500"
                                 }`}
                         >
                             Login
                         </button>
                         <button
+                            type="button"
                             onClick={() => switchTab("register")}
                             className={`flex-1 py-3 text-center font-medium transition-colors ${activeTab === "register"
-                                ? "bg-sky-500 text-white"
-                                : "bg-gray-100 dark:bg-slate-600 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-500"
+                                    ? "bg-sky-500 text-white"
+                                    : "bg-gray-100 dark:bg-slate-600 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-500"
                                 }`}
                         >
                             Register
@@ -132,7 +132,7 @@ export function Auth() {
                     </div>
 
                     {/* Form */}
-                    <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                    <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
                         {/* Username */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -140,13 +140,13 @@ export function Auth() {
                             </label>
                             <input
                                 type="text"
-                                name="username"
-                                value={formData.username}
-                                onChange={handleChange}
-                                required
-                                className="w-full px-4 py-2 border border-gray-300 dark:border-slate-500 rounded-lg bg-white dark:bg-slate-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
+                                {...register("username")}
+                                className={inputClass(errors.username)}
                                 placeholder="Enter username"
                             />
+                            {errors.username && (
+                                <p className="text-red-500 text-sm mt-1">{errors.username.message}</p>
+                            )}
                         </div>
 
                         {/* Email (Register only) */}
@@ -157,13 +157,13 @@ export function Auth() {
                                 </label>
                                 <input
                                     type="email"
-                                    name="email"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    required
-                                    className="w-full px-4 py-2 border border-gray-300 dark:border-slate-500 rounded-lg bg-white dark:bg-slate-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
+                                    {...register("email")}
+                                    className={inputClass(errors.email)}
                                     placeholder="Enter email"
                                 />
+                                {errors.email && (
+                                    <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+                                )}
                             </div>
                         )}
 
@@ -174,13 +174,13 @@ export function Auth() {
                             </label>
                             <input
                                 type="password"
-                                name="password"
-                                value={formData.password}
-                                onChange={handleChange}
-                                required
-                                className="w-full px-4 py-2 border border-gray-300 dark:border-slate-500 rounded-lg bg-white dark:bg-slate-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
+                                {...register("password")}
+                                className={inputClass(errors.password)}
                                 placeholder="Enter password"
                             />
+                            {errors.password && (
+                                <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+                            )}
                         </div>
 
                         {/* Confirm Password (Register only) */}
@@ -191,19 +191,19 @@ export function Auth() {
                                 </label>
                                 <input
                                     type="password"
-                                    name="confirmPassword"
-                                    value={formData.confirmPassword}
-                                    onChange={handleChange}
-                                    required
-                                    className="w-full px-4 py-2 border border-gray-300 dark:border-slate-500 rounded-lg bg-white dark:bg-slate-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
+                                    {...register("confirmPassword")}
+                                    className={inputClass(errors.confirmPassword)}
                                     placeholder="Confirm password"
                                 />
+                                {errors.confirmPassword && (
+                                    <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>
+                                )}
                             </div>
                         )}
 
-                        {/* Error Message */}
-                        {error && (
-                            <p className="text-red-500 text-sm text-center">{error}</p>
+                        {/* API Error Message */}
+                        {apiError && (
+                            <p className="text-red-500 text-sm text-center">{apiError}</p>
                         )}
 
                         {/* Success Message */}
