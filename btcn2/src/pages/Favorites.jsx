@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { getUserFavorites, removeFromFavorites } from "../services/api";
+import { getUserFavorites, removeFromFavorites, getMovieDetails } from "../services/api";
 import { MovieCard } from "../components/movie/MovieCard";
 
 /**
@@ -31,8 +31,29 @@ export function Favorites() {
         const fetchFavorites = async () => {
             setIsLoading(true);
             try {
-                const data = await getUserFavorites();
-                setFavorites(data);
+                // 1. Get list of favorite movie IDs
+                const favoriteIds = await getUserFavorites();
+
+                // 2. Fetch full movie details for each favorite
+                if (Array.isArray(favoriteIds) && favoriteIds.length > 0) {
+                    const moviePromises = favoriteIds.map(async (item) => {
+                        try {
+                            // item có thể là object {id, ...} hoặc chỉ là string id
+                            const movieId = item.id || item.movie_id || item;
+                            const movieData = await getMovieDetails(movieId);
+                            return movieData;
+                        } catch (err) {
+                            console.error("Error fetching movie:", err);
+                            return null;
+                        }
+                    });
+
+                    const movies = await Promise.all(moviePromises);
+                    // Filter out null values (failed fetches)
+                    setFavorites(movies.filter(m => m !== null));
+                } else {
+                    setFavorites([]);
+                }
             } catch (err) {
                 console.error("Error fetching favorites:", err);
             } finally {
