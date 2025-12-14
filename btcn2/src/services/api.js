@@ -290,3 +290,31 @@ export async function getMovieReviews(movieId, page = 1, limit = 10, sort = "new
         }
     };
 }
+
+/**
+ * Register a new user
+ * @param {object} userData - User registration data
+ * @param {string} userData.username - Username
+ * @param {string} userData.email - Email
+ * @param {string} userData.password - Password
+ * @param {string} userData.phone - Phone number (optional)
+ * @param {string} userData.dob - Date of birth (optional, YYYY-MM-DD)
+ * @returns {Promise<object>} - Registration result
+ */
+export async function registerUser({ username, email, password, phone, dob }) {
+    const result = await apiRequest("/users/register", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            username,
+            email,
+            password,
+            phone: phone || undefined,
+            dob: dob || undefined,
+        }),
+    });
+
+    return result;
+}
