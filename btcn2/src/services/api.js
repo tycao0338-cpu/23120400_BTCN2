@@ -159,3 +159,61 @@ export async function searchByPerson(person, page = 1, limit = 10) {
     };
 }
 
+/**
+ * Get movie details by ID
+ * @param {string} movieId - Movie ID (e.g., "tt0012349")
+ * @returns {Promise<object>} - Movie details with directors, actors, reviews, similar_movies
+ */
+export async function getMovieDetails(movieId) {
+    if (!movieId) {
+        throw new Error("Movie ID is required");
+    }
+
+    const result = await apiRequest(`/movies/${encodeURIComponent(movieId)}`);
+
+    return {
+        id: result.id,
+        title: result.title,
+        full_title: result.full_title,
+        release_date: result.year?.toString() || "",
+        poster_path: result.image,
+        rating: result.rate,
+        runtime: result.runtime,
+        overview: result.plot_full,
+        short_description: result.short_description,
+        genres: result.genres || [],
+        awards: result.awards,
+        box_office: result.box_office || {},
+        ratings: result.ratings || {},
+        directors: (result.directors || []).map((d) => ({
+            id: d.id,
+            name: d.name,
+            role: d.role,
+            image: d.image,
+        })),
+        actors: (result.actors || []).map((a) => ({
+            id: a.id,
+            name: a.name,
+            role: a.role,
+            image: a.image,
+            character: a.character,
+        })),
+        reviews: (result.reviews || []).map((r) => ({
+            id: r.id,
+            author: r.username,
+            rating: r.rate,
+            title: r.title,
+            content: r.content,
+            date: r.date,
+            warning_spoilers: r.warning_spoilers,
+        })),
+        similar_movies: (result.similar_movies || []).map((m) => ({
+            id: m.id,
+            title: m.title,
+            release_date: m.year?.toString() || "",
+            poster_path: m.image,
+            rating: m.rate,
+            genres: m.genres || [],
+        })),
+    };
+}
