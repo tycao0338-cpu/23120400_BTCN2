@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { registerUser } from "../services/api";
 
 /**
  * Auth - Trang đăng nhập và đăng ký
@@ -19,6 +20,7 @@ export function Auth() {
         confirmPassword: "",
     });
     const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
     // Handle input change
@@ -26,12 +28,14 @@ export function Auth() {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
         setError("");
+        setSuccess("");
     };
 
     // Handle form submit
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
+        setSuccess("");
 
         // Validation
         if (activeTab === "register") {
@@ -48,11 +52,25 @@ export function Auth() {
         setIsLoading(true);
 
         try {
-            // TODO: API call for login/register
-            console.log(`${activeTab}:`, formData);
-            alert(`${activeTab === "login" ? "Login" : "Register"} successful! (Demo)`);
+            if (activeTab === "register") {
+                // Call register API
+                await registerUser({
+                    username: formData.username,
+                    email: formData.email,
+                    password: formData.password,
+                });
+                setSuccess("Registration successful! Please login.");
+                // Switch to login tab after success
+                setTimeout(() => {
+                    switchTab("login");
+                }, 1500);
+            } else {
+                // TODO: Login API
+                console.log("Login:", formData);
+                alert("Login API coming soon!");
+            }
         } catch (err) {
-            setError(err.message);
+            setError(err.message || "Something went wrong");
         } finally {
             setIsLoading(false);
         }
@@ -84,8 +102,8 @@ export function Auth() {
                         <button
                             onClick={() => switchTab("login")}
                             className={`flex-1 py-3 text-center font-medium transition-colors ${activeTab === "login"
-                                    ? "bg-sky-500 text-white"
-                                    : "bg-gray-100 dark:bg-slate-600 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-500"
+                                ? "bg-sky-500 text-white"
+                                : "bg-gray-100 dark:bg-slate-600 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-500"
                                 }`}
                         >
                             Login
@@ -93,8 +111,8 @@ export function Auth() {
                         <button
                             onClick={() => switchTab("register")}
                             className={`flex-1 py-3 text-center font-medium transition-colors ${activeTab === "register"
-                                    ? "bg-sky-500 text-white"
-                                    : "bg-gray-100 dark:bg-slate-600 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-500"
+                                ? "bg-sky-500 text-white"
+                                : "bg-gray-100 dark:bg-slate-600 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-500"
                                 }`}
                         >
                             Register
@@ -174,6 +192,11 @@ export function Auth() {
                         {/* Error Message */}
                         {error && (
                             <p className="text-red-500 text-sm text-center">{error}</p>
+                        )}
+
+                        {/* Success Message */}
+                        {success && (
+                            <p className="text-green-500 text-sm text-center">{success}</p>
                         )}
 
                         {/* Submit Button */}
