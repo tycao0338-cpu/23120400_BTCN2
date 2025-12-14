@@ -46,7 +46,7 @@ export function Home() {
     // Show LoadingSpinner while loading
     if (loading) {
         return (
-            <main className="flex-1 bg-gray-100 dark:bg-slate-800 transition-colors">
+            <main className="flex-1 bg-gradient-to-b from-gray-50 via-gray-100 to-gray-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 transition-colors">
                 <LoadingSpinner message="Loading movies..." />
             </main>
         );
@@ -54,25 +54,29 @@ export function Home() {
 
     // Show content after loading
     return (
-        <main className="flex-1 bg-gray-100 dark:bg-slate-800 transition-colors">
+        <main className="flex-1 bg-gradient-to-b from-gray-50 via-gray-100 to-gray-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 transition-colors">
             {/* Hero Slider - Top 5 phim */}
             <HeroSlider movies={heroMovies} />
 
-            {/* Most Popular - 15 phim với pagination 3/trang */}
-            <MovieRow
-                title="Most Popular"
-                movies={popularMovies}
-                moviesPerPage={3}
-            />
+            {/* Content Section with padding */}
+            <div className="py-6 space-y-8">
+                {/* Most Popular - 15 phim với pagination 3/trang */}
+                <MovieRow
+                    title="🔥 Most Popular"
+                    movies={popularMovies}
+                    moviesPerPage={3}
+                />
 
-            {/* Top Rating - 15 phim IMDB TOP 50 với pagination 3/trang */}
-            <MovieRow
-                title="Top Rating"
-                movies={topRatedMovies}
-                moviesPerPage={3}
-            />
+                {/* Top Rating - 15 phim IMDB TOP 50 với pagination 3/trang */}
+                <MovieRow
+                    title="⭐ Top Rating"
+                    movies={topRatedMovies}
+                    moviesPerPage={3}
+                />
+            </div>
         </main>
     );
 }
 
 export default Home;
+
