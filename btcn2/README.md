@@ -27,16 +27,68 @@ npm run dev
 ## 📁 Project Structure
 
 ```
-src/
-├── components/
-│   ├── ui/          # Shadcn UI components
-│   └── ...          # Custom components
-├── lib/
-│   └── utils.js     # Utility functions (cn helper)
-├── App.jsx
-├── main.jsx
-└── index.css        # Tailwind CSS entry
-```
+MY-MOVIE-APP/
+├── .env                    # Biến môi trường (Lưu API_URL)
+├── .gitignore              # Cấu hình file/folder không up lên git
+├── diem.txt                # FILE BẮT BUỘC (Tự chấm điểm)
+├── gitlog.txt              # FILE BẮT BUỘC (Log commit)
+├── index.html              # File HTML gốc
+├── package.json            # Khai báo thư viện (dependencies)
+├── postcss.config.js       # Cấu hình Tailwind
+├── tailwind.config.js      # Cấu hình Tailwind
+├── vite.config.js          # Cấu hình Vite
+├── README.md               # Báo cáo bài tập
+│
+└── src/
+    ├── main.jsx            # Entry point (Render App)
+    ├── App.jsx             # Nơi khai báo Routing chính (Routes)
+    ├── index.css           # CSS toàn cục (Import Tailwind directives)
+    │
+    ├── components/         # Chứa các thành phần giao diện nhỏ (Reusable)
+    │   ├── ui/             # Các component của Shadcn (Button, Input, Card...)
+    │   ├── layout/         # Bố cục trang
+    │   │   ├── Header.jsx       # Navbar, Logo, DarkModeToggle
+    │   │   ├── Footer.jsx       # Footer thông tin
+    │   │   └── MainLayout.jsx   # Chứa <Outlet /> để render các page con
+    │   │
+    │   ├── movie/          # Component riêng về Phim
+    │   │   ├── MovieCard.jsx    # Card hiển thị phim (Poster, Title...)
+    │   │   ├── HeroSlider.jsx   # Slider to ở trang chủ
+    │   │   ├── MovieRow.jsx     # List phim nằm ngang
+    │   │   └── ReviewItem.jsx   # Item hiển thị review
+    │   │
+    │   └── common/         # Component dùng chung khác
+    │       ├── LoadingSpinner.jsx
+    │       ├── PaginationControls.jsx
+    │       └── ProtectedRoute.jsx # Wrapper bảo vệ route cần login
+    │
+    ├── pages/              # Các trang màn hình chính (tương ứng link router)
+    │   ├── Home.jsx             # Trang chủ
+    │   ├── Login.jsx            # Trang đăng nhập
+    │   ├── Register.jsx         # Trang đăng ký
+    │   ├── MovieDetail.jsx      # Trang chi tiết phim
+    │   ├── PersonDetail.jsx     # Trang chi tiết diễn viên
+    │   ├── Search.jsx           # Trang tìm kiếm
+    │   ├── Favorites.jsx        # Trang danh sách yêu thích
+    │   └── NotFound.jsx         # Trang 404
+    │
+    ├── services/           # Xử lý Logic gọi API (Chỉ dùng Fetch)
+    │   ├── apiClient.js         # File cấu hình fetch chung (Base URL, Token)
+    │   ├── authService.js       # API login, register
+    │   └── movieService.js      # API get movies, details, search
+    │
+    ├── hooks/              # Custom Hooks (Logic tái sử dụng)
+    │   ├── useAuth.js           # Hook lấy thông tin user/token
+    │   └── useDebounce.js       # Hook delay khi gõ tìm kiếm
+    │
+    ├── context/            # Quản lý State toàn cục
+    │   ├── AuthContext.jsx      # Lưu trạng thái đăng nhập
+    │   └── ThemeContext.jsx     # Lưu trạng thái Dark Mode
+    │
+    ├── lib/                # Các hàm tiện ích (Utils)
+    │   └── utils.js             # Hàm của Shadcn (cn, clsx...)
+    │
+    └── assets/             # Hình ảnh tĩnh, Logo...
 ## 🏗 Project Structure & Compliance (Kiến trúc & Tuân thủ)
 
 Dự án được xây dựng nhằm đảm bảo tuân thủ chặt chẽ các yêu cầu khắt khe về Kiến trúc và Quy trình:
