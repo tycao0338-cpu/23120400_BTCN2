@@ -1,13 +1,60 @@
-import { Link } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { NavBar } from "./NavBar";
 import { useTheme } from "../hooks/useTheme";
 
 /**
  * Header - Layout component containing top bar and navigation
+ * - Guest: Login/Register buttons
+ * - User: Avatar dropdown với My Profile, My Favorites, Logout
  * Located in: src/layouts/ (theo README structure)
  */
 export function Header() {
     const { isDark, toggleTheme } = useTheme();
+    const navigate = useNavigate();
+
+    // User state from localStorage
+    const [user, setUser] = useState(null);
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+    const dropdownRef = useRef(null);
+
+    // Check localStorage for user on mount
+    useEffect(() => {
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) {
+            try {
+                setUser(JSON.parse(storedUser));
+            } catch (e) {
+                console.error("Error parsing user:", e);
+            }
+        }
+    }, []);
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setDropdownOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    // Logout handler
+    const handleLogout = () => {
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("user");
+        setUser(null);
+        setDropdownOpen(false);
+        navigate("/");
+    };
+
+    // Get user initials
+    const getInitials = (name) => {
+        if (!name) return "U";
+        return name.charAt(0).toUpperCase();
+    };
 
     return (
         <header className="w-full">
@@ -26,22 +73,85 @@ export function Header() {
                     <h1 className="text-white font-semibold text-lg">Movies info</h1>
                 </Link>
 
-                {/* Theme Toggle & User Icon */}
+                {/* Theme Toggle & User Section */}
                 <div className="bg-sky-400 dark:bg-slate-700 px-4 h-full flex items-center gap-3">
-
+                    {/* Theme Toggle */}
                     <button
                         onClick={toggleTheme}
-                        className={`relative w-10 h-5 rounded-full transition-colors ${isDark ? "bg-slate-600" : "bg-white/30"
-                            }`}
+                        className={`relative w-10 h-5 rounded-full transition-colors ${isDark ? "bg-slate-600" : "bg-white/30"}`}
                     >
                         <span
-                            className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${isDark ? "left-[22px]" : "left-0.5"
-                                }`}
+                            className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${isDark ? "left-[22px]" : "left-0.5"}`}
                         ></span>
                     </button>
-                    <span className="text-xl">
-                        {isDark ? "🌙" : "☀️"}
-                    </span>
+                    <span className="text-xl">{isDark ? "🌙" : "☀️"}</span>
+
+                    {/* User Section */}
+                    {user ? (
+                        /* Logged In - Avatar Dropdown */
+                        <div className="relative" ref={dropdownRef}>
+                            <button
+                                onClick={() => setDropdownOpen(!dropdownOpen)}
+                                className="w-8 h-8 rounded-full bg-sky-600 hover:bg-sky-700 flex items-center justify-center text-white font-medium text-sm transition-colors"
+                            >
+                                {getInitials(user.username)}
+                            </button>
+
+                            {/* Dropdown Menu */}
+                            {dropdownOpen && (
+                                <div className="absolute right-0 top-10 w-48 bg-white dark:bg-slate-700 rounded-lg shadow-lg border border-gray-200 dark:border-slate-600 py-1 z-50">
+                                    {/* User Info */}
+                                    <div className="px-4 py-2 border-b border-gray-200 dark:border-slate-600">
+                                        <p className="font-medium text-gray-900 dark:text-white text-sm">{user.username}</p>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">{user.email}</p>
+                                    </div>
+
+                                    {/* Menu Items */}
+                                    <Link
+                                        to="/profile"
+                                        onClick={() => setDropdownOpen(false)}
+                                        className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-600"
+                                    >
+                                        👤 My Profile
+                                    </Link>
+                                    <Link
+                                        to="/favorites"
+                                        onClick={() => setDropdownOpen(false)}
+                                        className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-600"
+                                    >
+                                        ❤️ My Favorites
+                                    </Link>
+
+                                    {/* Separator */}
+                                    <div className="border-t border-gray-200 dark:border-slate-600 my-1"></div>
+
+                                    {/* Logout */}
+                                    <button
+                                        onClick={handleLogout}
+                                        className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+                                    >
+                                        🚪 Logout
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    ) : (
+                        /* Guest - Login/Register Buttons */
+                        <div className="flex items-center gap-2">
+                            <Link
+                                to="/auth"
+                                className="px-3 py-1 text-sm text-white hover:text-sky-100 transition-colors"
+                            >
+                                Login
+                            </Link>
+                            <Link
+                                to="/auth"
+                                className="px-3 py-1 text-sm bg-white text-sky-600 rounded hover:bg-sky-50 transition-colors"
+                            >
+                                Register
+                            </Link>
+                        </div>
+                    )}
                 </div>
             </div>
 

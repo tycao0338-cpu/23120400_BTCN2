@@ -133,39 +133,39 @@ export function Auth() {
 
                     {/* Form */}
                     <form onSubmit={handleSubmit} className="p-6 space-y-4">
-                        {/* Username (Register only) */}
-                        {activeTab === "register" && (
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                    Username
-                                </label>
-                                <input
-                                    type="text"
-                                    name="username"
-                                    value={formData.username}
-                                    onChange={handleChange}
-                                    required
-                                    className="w-full px-4 py-2 border border-gray-300 dark:border-slate-500 rounded-lg bg-white dark:bg-slate-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
-                                    placeholder="Enter username"
-                                />
-                            </div>
-                        )}
-
-                        {/* Email */}
+                        {/* Username */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                Email
+                                Username
                             </label>
                             <input
-                                type="email"
-                                name="email"
-                                value={formData.email}
+                                type="text"
+                                name="username"
+                                value={formData.username}
                                 onChange={handleChange}
                                 required
                                 className="w-full px-4 py-2 border border-gray-300 dark:border-slate-500 rounded-lg bg-white dark:bg-slate-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
-                                placeholder="Enter email"
+                                placeholder="Enter username"
                             />
                         </div>
+
+                        {/* Email (Register only) */}
+                        {activeTab === "register" && (
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    Email
+                                </label>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    required
+                                    className="w-full px-4 py-2 border border-gray-300 dark:border-slate-500 rounded-lg bg-white dark:bg-slate-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
+                                    placeholder="Enter email"
+                                />
+                            </div>
+                        )}
 
                         {/* Password */}
                         <div>
