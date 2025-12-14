@@ -20,10 +20,7 @@ export function Header() {
 
                 {/* Theme Toggle & User Icon */}
                 <div className="bg-sky-400 dark:bg-slate-700 px-4 h-full flex items-center gap-3">
-                    {/* Theme Icon */}
 
-
-                    {/* Toggle Switch */}
                     <button
                         onClick={toggleTheme}
                         className={`relative w-10 h-5 rounded-full transition-colors ${isDark ? "bg-slate-600" : "bg-white/30"
