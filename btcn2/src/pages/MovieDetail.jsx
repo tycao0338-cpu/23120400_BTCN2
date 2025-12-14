@@ -230,9 +230,20 @@ export function MovieDetail() {
                                 key={review.id}
                                 className="bg-white dark:bg-slate-700 rounded-lg p-4 shadow-md"
                             >
-                                {/* Review Header */}
+                                {/* Review Header - Username, Date, Rating */}
                                 <div className="flex items-center justify-between mb-2">
-                                    <span className="font-semibold dark:text-white">{review.author}</span>
+                                    <div className="flex items-center gap-2">
+                                        <span className="font-semibold dark:text-white">{review.author}</span>
+                                        {review.date && (
+                                            <span className="text-xs text-gray-400 dark:text-gray-500">
+                                                • {new Date(review.date).toLocaleDateString('en-US', {
+                                                    year: 'numeric',
+                                                    month: 'short',
+                                                    day: 'numeric'
+                                                })}
+                                            </span>
+                                        )}
+                                    </div>
                                     {review.rating && (
                                         <div className="flex items-center gap-1 text-yellow-500 text-sm">
                                             <span>⭐</span>
