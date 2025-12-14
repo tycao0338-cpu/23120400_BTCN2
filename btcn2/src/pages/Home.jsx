@@ -62,14 +62,14 @@ export function Home() {
             <div className="py-6 space-y-8">
                 {/* Most Popular - 15 phim với pagination 3/trang */}
                 <MovieRow
-                    title="🔥 Most Popular"
+                    title=" Most Popular"
                     movies={popularMovies}
                     moviesPerPage={3}
                 />
 
                 {/* Top Rating - 15 phim IMDB TOP 50 với pagination 3/trang */}
                 <MovieRow
-                    title="⭐ Top Rating"
+                    title=" Top Rating"
                     movies={topRatedMovies}
                     moviesPerPage={3}
                 />

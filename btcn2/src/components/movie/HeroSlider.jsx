@@ -46,7 +46,7 @@ export function HeroSlider({ movies = [] }) {
     // Placeholder khi chưa có data
     if (movies.length === 0) {
         return (
-            <div className="relative h-80 m-4 rounded-lg bg-gray-200 dark:bg-slate-700 flex items-center justify-center">
+            <div className="relative h-96 mx-auto my-4 max-w-4xl rounded-xl bg-gray-200 dark:bg-slate-700 flex items-center justify-center">
                 <p className="text-gray-500 dark:text-gray-400">Loading top movies...</p>
             </div>
         );
@@ -57,7 +57,7 @@ export function HeroSlider({ movies = [] }) {
     return (
         <Link
             to={`/movie/${currentMovie.id}`}
-            className="relative h-80 m-4 rounded-lg overflow-hidden group block cursor-pointer"
+            className="relative h-96 mx-auto my-4 max-w-4xl rounded-xl overflow-hidden group block cursor-pointer shadow-lg"
         >
             {/* Movie Poster as Background - Clickable */}
             <div
