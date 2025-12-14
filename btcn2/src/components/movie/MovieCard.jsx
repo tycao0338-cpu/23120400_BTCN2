@@ -6,10 +6,11 @@ import { Link } from "react-router-dom";
  * - Scale up khi hover
  * - Z-index cao hơn (nổi lên trên)
  * - Hiển thị info overlay (title + year)
+ * - Optional: Remove button for favorites
  * - Smooth transition
  */
 
-export function MovieCard({ movie }) {
+export function MovieCard({ movie, onRemove, isRemoving }) {
     // Destructure movie data với default values
     const {
         id,
@@ -21,11 +22,34 @@ export function MovieCard({ movie }) {
     // Lấy năm từ release_date
     const year = release_date ? release_date.slice(0, 4) : "";
 
+    // Handle remove click
+    const handleRemoveClick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (onRemove) onRemove(id);
+    };
+
     return (
         <Link
             to={`/movie/${id}`}
             className="relative w-48 rounded-lg overflow-visible cursor-pointer group block"
         >
+            {/* Remove Button - chỉ hiển thị khi có onRemove prop */}
+            {onRemove && (
+                <button
+                    onClick={handleRemoveClick}
+                    disabled={isRemoving}
+                    className="absolute top-1 right-1 z-[60] p-1.5 bg-red-500 hover:bg-red-600 disabled:bg-red-300 text-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                    title="Remove from favorites"
+                >
+                    {isRemoving ? (
+                        <span className="text-xs">⏳</span>
+                    ) : (
+                        <span className="text-xs">🗑️</span>
+                    )}
+                </button>
+            )}
+
             {/* Card Container với hover effects */}
             <div className="relative h-72 rounded-lg overflow-hidden transition-all duration-300 ease-out group-hover:scale-125 group-hover:z-50 group-hover:shadow-2xl">
                 {/* Poster Image */}

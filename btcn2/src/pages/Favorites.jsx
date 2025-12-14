@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getUserFavorites, removeFromFavorites } from "../services/api";
+import { MovieCard } from "../components/movie/MovieCard";
 
 /**
  * Favorites - Trang hiển thị danh sách phim yêu thích
@@ -15,6 +16,15 @@ export function Favorites() {
     const [favorites, setFavorites] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [removingId, setRemovingId] = useState(null);
+
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 3;
+    const totalPages = Math.ceil(favorites.length / itemsPerPage);
+    const paginatedFavorites = favorites.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
 
     // Fetch favorites on mount
     useEffect(() => {
@@ -50,6 +60,14 @@ export function Favorites() {
         }
     };
 
+    // Pagination handlers
+    const goToPage = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+    };
+
     return (
         <main className="flex-1 bg-gray-100 dark:bg-slate-800 transition-colors p-4">
             {/* Header */}
@@ -66,16 +84,41 @@ export function Favorites() {
 
             {/* Movies Grid */}
             {!isLoading && favorites.length > 0 && (
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                    {favorites.map((movie) => (
-                        <FavoriteCard
-                            key={movie.id}
-                            movie={movie}
-                            onRemove={handleRemoveFavorite}
-                            isRemoving={removingId === movie.id}
-                        />
-                    ))}
-                </div>
+                <>
+                    <div className="flex flex-wrap gap-4 justify-center">
+                        {paginatedFavorites.map((movie) => (
+                            <MovieCard
+                                key={movie.id}
+                                movie={movie}
+                                onRemove={handleRemoveFavorite}
+                                isRemoving={removingId === movie.id}
+                            />
+                        ))}
+                    </div>
+
+                    {/* Pagination Controls */}
+                    {totalPages > 1 && (
+                        <div className="flex items-center justify-center gap-4 mt-6">
+                            <button
+                                onClick={() => goToPage(currentPage - 1)}
+                                disabled={currentPage <= 1}
+                                className="px-4 py-2 bg-sky-500 hover:bg-sky-600 disabled:bg-gray-300 dark:disabled:bg-slate-600 text-white disabled:text-gray-500 rounded-lg transition-colors disabled:cursor-not-allowed"
+                            >
+                                ← Previous
+                            </button>
+                            <span className="text-gray-600 dark:text-gray-400">
+                                Page {currentPage} of {totalPages}
+                            </span>
+                            <button
+                                onClick={() => goToPage(currentPage + 1)}
+                                disabled={currentPage >= totalPages}
+                                className="px-4 py-2 bg-sky-500 hover:bg-sky-600 disabled:bg-gray-300 dark:disabled:bg-slate-600 text-white disabled:text-gray-500 rounded-lg transition-colors disabled:cursor-not-allowed"
+                            >
+                                Next →
+                            </button>
+                        </div>
+                    )}
+                </>
             )}
 
             {/* Empty State */}
@@ -100,67 +143,5 @@ export function Favorites() {
     );
 }
 
-/**
- * FavoriteCard - Card hiển thị phim trong favorites với nút xóa
- */
-function FavoriteCard({ movie, onRemove, isRemoving }) {
-    const { id, title, rating, release_date, poster_path } = movie;
-
-    const handleRemoveClick = (e) => {
-        e.preventDefault(); // Prevent navigation
-        e.stopPropagation();
-        onRemove(id);
-    };
-
-    return (
-        <div className="relative bg-white dark:bg-slate-700 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all group">
-            {/* Remove Button */}
-            <button
-                onClick={handleRemoveClick}
-                disabled={isRemoving}
-                className="absolute top-2 right-2 z-10 p-1.5 bg-red-500 hover:bg-red-600 disabled:bg-red-300 text-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
-                title="Remove from favorites"
-            >
-                {isRemoving ? (
-                    <span className="text-sm">⏳</span>
-                ) : (
-                    <span className="text-sm">🗑️</span>
-                )}
-            </button>
-
-            <Link to={`/movie/${id}`}>
-                {/* Poster */}
-                <div className="aspect-[2/3] bg-gray-300 dark:bg-slate-600 flex items-center justify-center overflow-hidden">
-                    {poster_path ? (
-                        <img
-                            src={poster_path}
-                            alt={title}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                            onError={(e) => { e.target.style.display = "none"; }}
-                        />
-                    ) : (
-                        <span className="text-gray-400 dark:text-gray-500 text-4xl">🎬</span>
-                    )}
-                </div>
-
-                {/* Info */}
-                <div className="p-3">
-                    <h3 className="font-semibold text-sm dark:text-white truncate mb-2">{title}</h3>
-                    <div className="flex items-center justify-between text-xs">
-                        {rating && (
-                            <div className="flex items-center gap-1 text-yellow-500">
-                                <span>⭐</span>
-                                <span className="font-medium">{rating}</span>
-                            </div>
-                        )}
-                        {release_date && (
-                            <div className="text-gray-500 dark:text-gray-400">{release_date}</div>
-                        )}
-                    </div>
-                </div>
-            </Link>
-        </div>
-    );
-}
-
 export default Favorites;
+
