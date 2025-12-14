@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
-import { getMovieDetails, getMovieReviews } from "../services/api";
+import { getMovieDetails, getMovieReviews, addToFavorites } from "../services/api";
 import { ReviewItem } from "../components/review/ReviewItem";
 
 /**
@@ -22,12 +22,35 @@ export function MovieDetail() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isFavorite, setIsFavorite] = useState(false);
+    const [favoriteLoading, setFavoriteLoading] = useState(false);
 
     // Reviews pagination state
     const [reviews, setReviews] = useState([]);
     const [reviewsPage, setReviewsPage] = useState(1);
     const [reviewsPagination, setReviewsPagination] = useState(null);
     const [reviewsLoading, setReviewsLoading] = useState(false);
+
+    // Handle toggle favorite
+    const handleToggleFavorite = async () => {
+        // Check if user is logged in
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+            // Redirect to auth if not logged in
+            navigate("/auth");
+            return;
+        }
+
+        setFavoriteLoading(true);
+        try {
+            await addToFavorites(id);
+            setIsFavorite(!isFavorite);
+        } catch (err) {
+            console.error("Error toggling favorite:", err);
+            alert(err.message || "Failed to update favorites");
+        } finally {
+            setFavoriteLoading(false);
+        }
+    };
 
     // Fetch movie details từ API
     useEffect(() => {
@@ -179,12 +202,13 @@ export function MovieDetail() {
                                 </h1>
                                 {/* Favorite Button */}
                                 <button
-                                    onClick={() => setIsFavorite(!isFavorite)}
-                                    className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-slate-600 transition-colors"
+                                    onClick={handleToggleFavorite}
+                                    disabled={favoriteLoading}
+                                    className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-slate-600 transition-colors disabled:opacity-50"
                                     title={isFavorite ? "Remove from favorites" : "Add to favorites"}
                                 >
                                     <span className="text-2xl">
-                                        {isFavorite ? "❤️" : "🤍"}
+                                        {favoriteLoading ? "⏳" : isFavorite ? "❤️" : "🤍"}
                                     </span>
                                 </button>
                             </div>
