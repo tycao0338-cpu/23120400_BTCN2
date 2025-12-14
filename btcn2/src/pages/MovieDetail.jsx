@@ -1,7 +1,10 @@
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { getMovieDetails } from "../services/api";
 
 /**
  * MovieDetail - Trang chi tiết phim
+ * - Fetch data từ API sử dụng useEffect
  * - Hero Section: Poster + Info (Title, Date, Director, Genres, Overview)
  * - Cast Section: Horizontal scrollable list
  * - Reviews Section: Vertical list
@@ -9,42 +12,94 @@ import { useNavigate, useParams } from "react-router-dom";
  * Located in: src/pages/ (theo README structure)
  */
 
-// Dummy data for UI testing
-const DUMMY_MOVIE = {
-    id: "tt0468569",
-    title: "The Dark Knight",
-    release_date: "2008",
-    director: "Christopher Nolan",
-    genres: ["Action", "Crime", "Drama"],
-    overview: "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
-    poster_path: null,
-    rating: 9.0,
-    runtime: 152,
-};
-
-const DUMMY_CAST = [
-    { id: 1, name: "Christian Bale", character: "Bruce Wayne", image: null },
-    { id: 2, name: "Heath Ledger", character: "Joker", image: null },
-    { id: 3, name: "Aaron Eckhart", character: "Harvey Dent", image: null },
-    { id: 4, name: "Michael Caine", character: "Alfred", image: null },
-    { id: 5, name: "Gary Oldman", character: "Gordon", image: null },
-    { id: 6, name: "Morgan Freeman", character: "Lucius Fox", image: null },
-];
-
-const DUMMY_REVIEWS = [
-    { id: 1, author: "MovieFan123", rating: 10, content: "One of the best superhero movies ever made. Heath Ledger's performance is legendary." },
-    { id: 2, author: "CriticJoe", rating: 9, content: "Christopher Nolan delivers a masterpiece. The Dark Knight transcends the comic book genre." },
-    { id: 3, author: "FilmBuff", rating: 8, content: "Great movie with excellent performances. The pacing is perfect throughout." },
-];
-
 export function MovieDetail() {
     const navigate = useNavigate();
     const { id } = useParams();
 
-    // TODO: Fetch movie data from API using id
-    const movie = DUMMY_MOVIE;
-    const cast = DUMMY_CAST;
-    const reviews = DUMMY_REVIEWS;
+    // State
+    const [movie, setMovie] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    // Fetch movie details từ API
+    useEffect(() => {
+        if (!id) return;
+
+        const fetchMovie = async () => {
+            setIsLoading(true);
+            setError(null);
+
+            try {
+                const data = await getMovieDetails(id);
+                setMovie(data);
+            } catch (err) {
+                console.error("Error fetching movie:", err);
+                setError(err.message);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchMovie();
+    }, [id]);
+
+    // Loading State
+    if (isLoading) {
+        return (
+            <main className="flex-1 bg-gray-100 dark:bg-slate-800 transition-colors p-4">
+                <div className="flex flex-col items-center justify-center py-20">
+                    <div className="w-12 h-12 border-4 border-sky-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                    <p className="text-gray-500 dark:text-gray-400">Loading movie details...</p>
+                </div>
+            </main>
+        );
+    }
+
+    // Error State
+    if (error) {
+        return (
+            <main className="flex-1 bg-gray-100 dark:bg-slate-800 transition-colors p-4">
+                <button
+                    onClick={() => navigate(-1)}
+                    className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors mb-4"
+                >
+                    <span className="text-xl">←</span>
+                    <span>Back</span>
+                </button>
+                <div className="text-center py-16">
+                    <div className="text-6xl mb-4">❌</div>
+                    <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        Error loading movie
+                    </h3>
+                    <p className="text-gray-500 dark:text-gray-400">{error}</p>
+                </div>
+            </main>
+        );
+    }
+
+    // No movie found
+    if (!movie) {
+        return (
+            <main className="flex-1 bg-gray-100 dark:bg-slate-800 transition-colors p-4">
+                <button
+                    onClick={() => navigate(-1)}
+                    className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors mb-4"
+                >
+                    <span className="text-xl">←</span>
+                    <span>Back</span>
+                </button>
+                <div className="text-center py-16">
+                    <div className="text-6xl mb-4">🎬</div>
+                    <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        Movie not found
+                    </h3>
+                </div>
+            </main>
+        );
+    }
+
+    // Lấy director từ directors array
+    const director = movie.directors?.[0]?.name || "Unknown";
 
     return (
         <main className="flex-1 bg-gray-100 dark:bg-slate-800 transition-colors">
@@ -70,6 +125,7 @@ export function MovieDetail() {
                                     src={movie.poster_path}
                                     alt={movie.title}
                                     className="w-full h-full object-cover"
+                                    onError={(e) => { e.target.style.display = "none"; }}
                                 />
                             ) : (
                                 <span className="text-gray-400 dark:text-gray-500 text-6xl">🎬</span>
@@ -95,31 +151,33 @@ export function MovieDetail() {
                         {/* Release Date & Runtime */}
                         <div className="flex items-center gap-4 text-gray-600 dark:text-gray-400 text-sm mb-3">
                             <span>{movie.release_date}</span>
-                            {movie.runtime && <span>• {movie.runtime} min</span>}
+                            {movie.runtime && <span>• {movie.runtime}</span>}
                         </div>
 
                         {/* Director */}
                         <p className="text-gray-700 dark:text-gray-300 mb-3">
-                            <span className="font-semibold">Director:</span> {movie.director}
+                            <span className="font-semibold">Director:</span> {director}
                         </p>
 
                         {/* Genres Badges */}
-                        <div className="flex flex-wrap gap-2 mb-4">
-                            {movie.genres.map((genre) => (
-                                <span
-                                    key={genre}
-                                    className="px-3 py-1 bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300 rounded-full text-sm"
-                                >
-                                    {genre}
-                                </span>
-                            ))}
-                        </div>
+                        {movie.genres?.length > 0 && (
+                            <div className="flex flex-wrap gap-2 mb-4">
+                                {movie.genres.map((genre) => (
+                                    <span
+                                        key={genre}
+                                        className="px-3 py-1 bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300 rounded-full text-sm"
+                                    >
+                                        {genre}
+                                    </span>
+                                ))}
+                            </div>
+                        )}
 
                         {/* Overview */}
                         <div>
                             <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-2">Overview</h3>
                             <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-                                {movie.overview}
+                                {movie.overview || movie.short_description || "No overview available."}
                             </p>
                         </div>
                     </div>
@@ -127,59 +185,72 @@ export function MovieDetail() {
             </section>
 
             {/* Cast Section - Horizontal Scroll */}
-            <section className="px-4 pb-6">
-                <h2 className="text-xl font-bold dark:text-white mb-3">Cast</h2>
-                <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
-                    {cast.map((actor) => (
-                        <div
-                            key={actor.id}
-                            className="flex-shrink-0 w-24 text-center"
-                        >
-                            {/* Actor Avatar */}
-                            <div className="w-20 h-20 mx-auto bg-gray-300 dark:bg-slate-600 rounded-full flex items-center justify-center overflow-hidden mb-2">
-                                {actor.image ? (
-                                    <img
-                                        src={actor.image}
-                                        alt={actor.name}
-                                        className="w-full h-full object-cover"
-                                    />
-                                ) : (
-                                    <span className="text-gray-400 dark:text-gray-500 text-2xl">👤</span>
-                                )}
+            {movie.actors?.length > 0 && (
+                <section className="px-4 pb-6">
+                    <h2 className="text-xl font-bold dark:text-white mb-3">Cast</h2>
+                    <div className="flex gap-4 overflow-x-auto pb-2">
+                        {movie.actors.map((actor) => (
+                            <div
+                                key={actor.id}
+                                className="flex-shrink-0 w-24 text-center"
+                            >
+                                {/* Actor Avatar */}
+                                <div className="w-20 h-20 mx-auto bg-gray-300 dark:bg-slate-600 rounded-full flex items-center justify-center overflow-hidden mb-2">
+                                    {actor.image ? (
+                                        <img
+                                            src={actor.image}
+                                            alt={actor.name}
+                                            className="w-full h-full object-cover"
+                                            onError={(e) => { e.target.style.display = "none"; }}
+                                        />
+                                    ) : (
+                                        <span className="text-gray-400 dark:text-gray-500 text-2xl">👤</span>
+                                    )}
+                                </div>
+                                {/* Actor Name */}
+                                <p className="text-sm font-medium dark:text-white truncate">{actor.name}</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{actor.character}</p>
                             </div>
-                            {/* Actor Name */}
-                            <p className="text-sm font-medium dark:text-white truncate">{actor.name}</p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{actor.character}</p>
-                        </div>
-                    ))}
-                </div>
-            </section>
+                        ))}
+                    </div>
+                </section>
+            )}
 
             {/* Reviews Section - Vertical List */}
             <section className="px-4 pb-6">
                 <h2 className="text-xl font-bold dark:text-white mb-3">Reviews</h2>
                 <div className="space-y-4">
-                    {reviews.map((review) => (
-                        <div
-                            key={review.id}
-                            className="bg-white dark:bg-slate-700 rounded-lg p-4 shadow-md"
-                        >
-                            {/* Review Header */}
-                            <div className="flex items-center justify-between mb-2">
-                                <span className="font-semibold dark:text-white">{review.author}</span>
-                                <div className="flex items-center gap-1 text-yellow-500 text-sm">
-                                    <span>⭐</span>
-                                    <span>{review.rating}/10</span>
+                    {movie.reviews?.length > 0 ? (
+                        movie.reviews.map((review) => (
+                            <div
+                                key={review.id}
+                                className="bg-white dark:bg-slate-700 rounded-lg p-4 shadow-md"
+                            >
+                                {/* Review Header */}
+                                <div className="flex items-center justify-between mb-2">
+                                    <span className="font-semibold dark:text-white">{review.author}</span>
+                                    {review.rating && (
+                                        <div className="flex items-center gap-1 text-yellow-500 text-sm">
+                                            <span>⭐</span>
+                                            <span>{review.rating}/10</span>
+                                        </div>
+                                    )}
                                 </div>
+                                {/* Review Title */}
+                                {review.title && (
+                                    <h4 className="font-medium text-gray-800 dark:text-gray-200 mb-1">{review.title}</h4>
+                                )}
+                                {/* Review Content */}
+                                <p className="text-gray-600 dark:text-gray-400 text-sm">
+                                    {review.content}
+                                </p>
+                                {/* Spoiler Warning */}
+                                {review.warning_spoilers && (
+                                    <p className="text-red-500 text-xs mt-2">⚠️ Contains spoilers</p>
+                                )}
                             </div>
-                            {/* Review Content */}
-                            <p className="text-gray-600 dark:text-gray-400 text-sm">
-                                {review.content}
-                            </p>
-                        </div>
-                    ))}
-
-                    {reviews.length === 0 && (
+                        ))
+                    ) : (
                         <p className="text-gray-500 dark:text-gray-400 text-center py-4">
                             No reviews yet
                         </p>
