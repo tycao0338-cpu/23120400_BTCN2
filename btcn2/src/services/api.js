@@ -351,3 +351,20 @@ export async function logoutUser() {
 
     return result;
 }
+
+/**
+ * Add movie to favorites
+ * @param {string} movieId - Movie ID (e.g., "tt0012349")
+ * @returns {Promise<object>} - Result
+ */
+export async function addToFavorites(movieId) {
+    if (!movieId) {
+        throw new Error("Movie ID is required");
+    }
+
+    const result = await apiRequest(`/users/favorites/${encodeURIComponent(movieId)}`, {
+        method: "POST",
+    });
+
+    return result;
+}
