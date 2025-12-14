@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
-import { getMovieDetails } from "../services/api";
+import { getMovieDetails, getMovieReviews } from "../services/api";
 import { ReviewItem } from "../components/review/ReviewItem";
 
 /**
@@ -21,6 +21,12 @@ export function MovieDetail() {
     const [movie, setMovie] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    // Reviews pagination state
+    const [reviews, setReviews] = useState([]);
+    const [reviewsPage, setReviewsPage] = useState(1);
+    const [reviewsPagination, setReviewsPagination] = useState(null);
+    const [reviewsLoading, setReviewsLoading] = useState(false);
 
     // Fetch movie details từ API
     useEffect(() => {
@@ -43,6 +49,34 @@ export function MovieDetail() {
 
         fetchMovie();
     }, [id]);
+
+    // Fetch reviews với pagination
+    useEffect(() => {
+        if (!id) return;
+
+        const fetchReviews = async () => {
+            setReviewsLoading(true);
+
+            try {
+                const data = await getMovieReviews(id, reviewsPage, 5);
+                setReviews(data.reviews);
+                setReviewsPagination(data.pagination);
+            } catch (err) {
+                console.error("Error fetching reviews:", err);
+            } finally {
+                setReviewsLoading(false);
+            }
+        };
+
+        fetchReviews();
+    }, [id, reviewsPage]);
+
+    // Reviews pagination handler
+    const goToReviewsPage = (page) => {
+        if (page >= 1 && page <= (reviewsPagination?.total_pages || 1)) {
+            setReviewsPage(page);
+        }
+    };
 
     // Loading State
     if (isLoading) {
@@ -221,28 +255,64 @@ export function MovieDetail() {
                 </section>
             )}
 
-            {/* Reviews Section - Vertical List */}
+            {/* Reviews Section - Vertical List with Pagination */}
             <section className="px-4 pb-6">
-                <h2 className="text-xl font-bold dark:text-white mb-3">Reviews</h2>
-                <div className="space-y-4">
-                    {movie.reviews?.length > 0 ? (
-                        movie.reviews.map((review) => (
-                            <ReviewItem
-                                key={review.id}
-                                username={review.author}
-                                rating={review.rating}
-                                title={review.title}
-                                content={review.content}
-                                date={review.date}
-                                isSpoiler={review.warning_spoilers}
-                            />
-                        ))
-                    ) : (
-                        <p className="text-gray-500 dark:text-gray-400 text-center py-4">
-                            No reviews yet
-                        </p>
-                    )}
-                </div>
+                <h2 className="text-xl font-bold dark:text-white mb-3">
+                    Reviews {reviewsPagination?.total_items > 0 && `(${reviewsPagination.total_items})`}
+                </h2>
+
+                {/* Reviews Loading */}
+                {reviewsLoading && (
+                    <div className="flex justify-center py-8">
+                        <div className="w-8 h-8 border-4 border-sky-500 border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                )}
+
+                {/* Reviews List */}
+                {!reviewsLoading && (
+                    <div className="space-y-4">
+                        {reviews.length > 0 ? (
+                            reviews.map((review) => (
+                                <ReviewItem
+                                    key={review.id}
+                                    username={review.author}
+                                    rating={review.rating}
+                                    title={review.title}
+                                    content={review.content}
+                                    date={review.date}
+                                    isSpoiler={review.warning_spoilers}
+                                />
+                            ))
+                        ) : (
+                            <p className="text-gray-500 dark:text-gray-400 text-center py-4">
+                                No reviews yet
+                            </p>
+                        )}
+                    </div>
+                )}
+
+                {/* Reviews Pagination */}
+                {reviewsPagination && reviewsPagination.total_pages > 1 && (
+                    <div className="flex items-center justify-center gap-4 mt-4">
+                        <button
+                            onClick={() => goToReviewsPage(reviewsPage - 1)}
+                            disabled={reviewsPage <= 1}
+                            className="px-3 py-1.5 bg-sky-500 hover:bg-sky-600 disabled:bg-gray-300 dark:disabled:bg-slate-600 text-white disabled:text-gray-500 rounded transition-colors disabled:cursor-not-allowed text-sm"
+                        >
+                            ← Prev
+                        </button>
+                        <span className="text-gray-600 dark:text-gray-400 text-sm">
+                            {reviewsPage} / {reviewsPagination.total_pages}
+                        </span>
+                        <button
+                            onClick={() => goToReviewsPage(reviewsPage + 1)}
+                            disabled={reviewsPage >= reviewsPagination.total_pages}
+                            className="px-3 py-1.5 bg-sky-500 hover:bg-sky-600 disabled:bg-gray-300 dark:disabled:bg-slate-600 text-white disabled:text-gray-500 rounded transition-colors disabled:cursor-not-allowed text-sm"
+                        >
+                            Next →
+                        </button>
+                    </div>
+                )}
             </section>
         </main>
     );
