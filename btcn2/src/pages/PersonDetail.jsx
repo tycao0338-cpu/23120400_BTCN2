@@ -1,40 +1,101 @@
+import { useState, useEffect } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
+import { getPersonDetails } from "../services/api";
 
 /**
  * PersonDetail - Trang chi tiết diễn viên/đạo diễn
+ * - Fetch data từ API sử dụng useEffect
  * - Profile Section: Avatar, Name, Birthday, Biography
  * - Known For Section: Grid layout với MovieCard
  * - Responsive layout (stack on mobile)
  * Located in: src/pages/ (theo README structure)
  */
 
-// Dummy data for UI testing
-const DUMMY_PERSON = {
-    id: "nm0000122",
-    name: "Charles Chaplin",
-    birthday: "April 16, 1889",
-    birthplace: "London, England, UK",
-    image: null,
-    biography: "Sir Charles Spencer Chaplin was an English comic actor, filmmaker, and composer who rose to fame in the era of silent film. He became a worldwide icon through his screen persona, the Tramp, and is considered one of the most important figures in the history of the film industry. His career spanned more than 75 years, from childhood in the Victorian era until a year before his death in 1977, and encompassed both adulation and controversy.",
-    known_for_department: "Acting",
-};
-
-const DUMMY_MOVIES = [
-    { id: "tt0012349", title: "The Kid", release_date: "1921", poster_path: null, rating: 8.3 },
-    { id: "tt0013442", title: "The Pilgrim", release_date: "1923", poster_path: null, rating: 7.5 },
-    { id: "tt0015864", title: "The Gold Rush", release_date: "1925", poster_path: null, rating: 8.2 },
-    { id: "tt0018773", title: "The Circus", release_date: "1928", poster_path: null, rating: 8.1 },
-    { id: "tt0027977", title: "Modern Times", release_date: "1936", poster_path: null, rating: 8.5 },
-    { id: "tt0032553", title: "The Great Dictator", release_date: "1940", poster_path: null, rating: 8.4 },
-];
-
 export function PersonDetail() {
     const navigate = useNavigate();
     const { id } = useParams();
 
-    // TODO: Fetch person data from API
-    const person = DUMMY_PERSON;
-    const movies = DUMMY_MOVIES;
+    // State
+    const [person, setPerson] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    // Fetch person details từ API
+    useEffect(() => {
+        if (!id) return;
+
+        const fetchPerson = async () => {
+            setIsLoading(true);
+            setError(null);
+
+            try {
+                const data = await getPersonDetails(id);
+                setPerson(data);
+            } catch (err) {
+                console.error("Error fetching person:", err);
+                setError(err.message);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchPerson();
+    }, [id]);
+
+    // Loading State
+    if (isLoading) {
+        return (
+            <main className="flex-1 bg-gray-100 dark:bg-slate-800 transition-colors p-4">
+                <div className="flex flex-col items-center justify-center py-20">
+                    <div className="w-12 h-12 border-4 border-sky-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                    <p className="text-gray-500 dark:text-gray-400">Loading person details...</p>
+                </div>
+            </main>
+        );
+    }
+
+    // Error State
+    if (error) {
+        return (
+            <main className="flex-1 bg-gray-100 dark:bg-slate-800 transition-colors p-4">
+                <button
+                    onClick={() => navigate(-1)}
+                    className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors mb-4"
+                >
+                    <span className="text-xl">←</span>
+                    <span>Back</span>
+                </button>
+                <div className="text-center py-16">
+                    <div className="text-6xl mb-4">❌</div>
+                    <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        Error loading person
+                    </h3>
+                    <p className="text-gray-500 dark:text-gray-400">{error}</p>
+                </div>
+            </main>
+        );
+    }
+
+    // No person found
+    if (!person) {
+        return (
+            <main className="flex-1 bg-gray-100 dark:bg-slate-800 transition-colors p-4">
+                <button
+                    onClick={() => navigate(-1)}
+                    className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors mb-4"
+                >
+                    <span className="text-xl">←</span>
+                    <span>Back</span>
+                </button>
+                <div className="text-center py-16">
+                    <div className="text-6xl mb-4">🎭</div>
+                    <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        Person not found
+                    </h3>
+                </div>
+            </main>
+        );
+    }
 
     return (
         <main className="flex-1 bg-gray-100 dark:bg-slate-800 transition-colors">
@@ -75,30 +136,35 @@ export function PersonDetail() {
                             {person.name}
                         </h1>
 
-                        {/* Department */}
-                        {person.known_for_department && (
+                        {/* Role/Department */}
+                        {person.role && (
                             <p className="text-sky-600 dark:text-sky-400 text-sm mb-3">
-                                {person.known_for_department}
+                                {person.role}
                             </p>
                         )}
 
-                        {/* Birthday & Birthplace */}
-                        <div className="text-gray-600 dark:text-gray-400 text-sm mb-4">
-                            {person.birthday && (
-                                <p><span className="font-semibold">Birthday:</span> {person.birthday}</p>
+                        {/* Birth/Death Date & Height */}
+                        <div className="text-gray-600 dark:text-gray-400 text-sm mb-4 space-y-1">
+                            {person.birth_date && (
+                                <p><span className="font-semibold">Born:</span> {person.birth_date}</p>
                             )}
-                            {person.birthplace && (
-                                <p><span className="font-semibold">Birthplace:</span> {person.birthplace}</p>
+                            {person.death_date && (
+                                <p><span className="font-semibold">Died:</span> {person.death_date}</p>
+                            )}
+                            {person.height && (
+                                <p><span className="font-semibold">Height:</span> {person.height}</p>
                             )}
                         </div>
 
-                        {/* Biography */}
-                        <div>
-                            <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-2">Biography</h3>
-                            <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-sm">
-                                {person.biography || "No biography available."}
-                            </p>
-                        </div>
+                        {/* Biography/Summary */}
+                        {person.summary && (
+                            <div>
+                                <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-2">Biography</h3>
+                                <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-sm">
+                                    {person.summary}
+                                </p>
+                            </div>
+                        )}
                     </div>
                 </div>
             </section>
@@ -107,9 +173,9 @@ export function PersonDetail() {
             <section className="px-4 pb-6">
                 <h2 className="text-xl font-bold dark:text-white mb-3">Known For</h2>
 
-                {movies.length > 0 ? (
+                {person.known_for?.length > 0 ? (
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                        {movies.map((movie) => (
+                        {person.known_for.map((movie) => (
                             <MovieCard key={movie.id} movie={movie} />
                         ))}
                     </div>
@@ -124,11 +190,11 @@ export function PersonDetail() {
 }
 
 /**
- * MovieCard - Reusable card for Known For section
- * (có thể import từ components/movie/MovieCard nếu cần)
+ * MovieCard - Card for Known For section
+ * Click navigates to movie detail page
  */
 function MovieCard({ movie }) {
-    const { id, title, rating, release_date, poster_path } = movie;
+    const { id, title, rating, release_date, poster_path, character } = movie;
 
     return (
         <Link
@@ -152,6 +218,9 @@ function MovieCard({ movie }) {
             {/* Info */}
             <div className="p-3">
                 <h3 className="font-semibold text-sm dark:text-white truncate mb-1">{title}</h3>
+                {character && (
+                    <p className="text-xs text-gray-500 dark:text-gray-400 truncate mb-1">as {character}</p>
+                )}
                 <div className="flex items-center justify-between text-xs">
                     {rating && (
                         <div className="flex items-center gap-1 text-yellow-500">
