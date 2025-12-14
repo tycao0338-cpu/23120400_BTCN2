@@ -76,9 +76,9 @@ export function Auth() {
                     localStorage.setItem("user", JSON.stringify(result.user));
                 }
                 setSuccess("Login successful! Redirecting...");
-                // Navigate to home after success
+                // Force reload to update Header user state
                 setTimeout(() => {
-                    navigate("/");
+                    window.location.href = "/";
                 }, 1000);
             }
         } catch (err) {
