@@ -3,28 +3,34 @@ import { Link, useSearchParams } from "react-router-dom";
 import { searchMovies, searchByPerson } from "../services/api";
 
 /**
- * Search - Trang tìm kiếm phim
+ * Search - Trang tìm kiếm phim với phân trang
  * - Đọc query và searchBy từ URL (?q=...&by=...)
- * - by=title: ?title=avatar
- * - by=person: ?person=tom 
  * - Kết quả luôn là movies (Grid layout với MovieCard)
+ * - Pagination: Previous/Next buttons
  * Located in: src/pages/ (theo README structure)
  */
 
 export function Search() {
     const [searchParams] = useSearchParams();
     const query = searchParams.get("q") || "";
-    const searchBy = searchParams.get("by") || "title"; // "title" or "person"
+    const searchBy = searchParams.get("by") || "title";
 
     const [results, setResults] = useState([]);
     const [pagination, setPagination] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    // Tự động search khi query hoặc searchBy thay đổi
+    // Reset page khi query hoặc searchBy thay đổi
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [query, searchBy]);
+
+    // Fetch search results
     useEffect(() => {
         if (!query.trim()) {
             setResults([]);
+            setPagination(null);
             return;
         }
 
@@ -36,11 +42,9 @@ export function Search() {
                 let response;
 
                 if (searchBy === "title") {
-                    // Search by movie title: ?title=avatar
-                    response = await searchMovies(query, 1, 10);
+                    response = await searchMovies(query, currentPage, 10);
                 } else {
-                    // Search by person: ?person=tom
-                    response = await searchByPerson(query, 1, 10);
+                    response = await searchByPerson(query, currentPage, 10);
                 }
 
                 setResults(response.data);
@@ -55,7 +59,15 @@ export function Search() {
         };
 
         doSearch();
-    }, [query, searchBy]);
+    }, [query, searchBy, currentPage]);
+
+    // Pagination handlers
+    const goToPage = (page) => {
+        if (page >= 1 && page <= (pagination?.total_pages || 1)) {
+            setCurrentPage(page);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+    };
 
     return (
         <main className="flex-1 bg-gray-100 dark:bg-slate-800 transition-colors p-4">
@@ -81,13 +93,43 @@ export function Search() {
                 </div>
             )}
 
-            {/* Results Grid - Movies */}
+            {/* Results Grid */}
             {!isLoading && !error && results.length > 0 && (
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                    {results.map((movie) => (
-                        <MovieCard key={movie.id} movie={movie} />
-                    ))}
-                </div>
+                <>
+                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                        {results.map((movie) => (
+                            <MovieCard key={movie.id} movie={movie} />
+                        ))}
+                    </div>
+
+                    {/* Pagination Controls */}
+                    {pagination && pagination.total_pages > 1 && (
+                        <div className="flex items-center justify-center gap-4 mt-6">
+                            {/* Previous Button */}
+                            <button
+                                onClick={() => goToPage(currentPage - 1)}
+                                disabled={currentPage <= 1}
+                                className="px-4 py-2 bg-sky-500 hover:bg-sky-600 disabled:bg-gray-300 dark:disabled:bg-slate-600 text-white disabled:text-gray-500 rounded-lg transition-colors disabled:cursor-not-allowed"
+                            >
+                                ← Previous
+                            </button>
+
+                            {/* Page Info */}
+                            <span className="text-gray-600 dark:text-gray-400 text-sm">
+                                Page {currentPage} of {pagination.total_pages}
+                            </span>
+
+                            {/* Next Button */}
+                            <button
+                                onClick={() => goToPage(currentPage + 1)}
+                                disabled={currentPage >= pagination.total_pages}
+                                className="px-4 py-2 bg-sky-500 hover:bg-sky-600 disabled:bg-gray-300 dark:disabled:bg-slate-600 text-white disabled:text-gray-500 rounded-lg transition-colors disabled:cursor-not-allowed"
+                            >
+                                Next →
+                            </button>
+                        </div>
+                    )}
+                </>
             )}
 
             {/* No Results */}
