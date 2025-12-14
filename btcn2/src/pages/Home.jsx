@@ -1,12 +1,13 @@
-import { HeroCarousel } from "./HeroCarousel";
-import { MovieCard } from "./movie/MovieCard";
+import { HeroCarousel } from "../components/movie/HeroSlider";
+import { MovieCard } from "../components/movie/MovieCard";
 import { useFetch } from "../hooks/useFetch";
 import { getMostPopular } from "../services/api";
 
 /**
- * Main - Component chính chứa các thông tin movie dựa vào trạng thái của trang
+ * Home - Trang chủ hiển thị thông tin phim
+ * Located in: src/pages/ (theo README structure)
  */
-export function Main() {
+export function Home() {
     // Sử dụng custom hook useFetch theo cấu trúc README
     const { data: mostPopularMovies, isLoading, error } = useFetch(
         () => getMostPopular(1, 5),
@@ -52,4 +53,4 @@ export function Main() {
     );
 }
 
-export default Main;
+export default Home;

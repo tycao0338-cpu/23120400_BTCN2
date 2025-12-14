@@ -1,5 +1,6 @@
 /**
- * Footer - Simple footer component
+ * Footer - Layout component
+ * Located in: src/layouts/ (theo README structure)
  */
 export function Footer() {
     return (

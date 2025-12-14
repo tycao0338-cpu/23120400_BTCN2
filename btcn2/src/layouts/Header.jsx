@@ -1,6 +1,10 @@
 import { NavBar } from "./NavBar";
 import { useTheme } from "../hooks/useTheme";
 
+/**
+ * Header - Layout component containing top bar and navigation
+ * Located in: src/layouts/ (theo README structure)
+ */
 export function Header() {
     const { isDark, toggleTheme } = useTheme();
 

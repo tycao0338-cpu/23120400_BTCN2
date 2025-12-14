@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 
 /**
- * HeroCarousel - Hiển thị 5 phim có doanh thu cao nhất
- * Chỉ hiện 1 phim tại một thời điểm với nút điều hướng
+ * HeroSlider - Slider to ở trang chủ hiển thị phim
+ * Located in: src/components/movie/ (theo README structure)
  */
-export function HeroCarousel({ movies = [] }) {
+export function HeroSlider({ movies = [] }) {
     const [currentIndex, setCurrentIndex] = useState(0);
 
     // Auto-slide every 5 seconds
@@ -101,4 +101,6 @@ export function HeroCarousel({ movies = [] }) {
     );
 }
 
-export default HeroCarousel;
+// Also export as HeroCarousel for backward compatibility
+export { HeroSlider as HeroCarousel };
+export default HeroSlider;

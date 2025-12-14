@@ -1,5 +1,9 @@
 import { Link } from "react-router-dom";
 
+/**
+ * NavBar - Navigation bar component
+ * Located in: src/layouts/ (theo README structure)
+ */
 export function NavBar() {
     return (
         <nav className="bg-blue-100 dark:bg-slate-700 border-b border-gray-300 dark:border-slate-600 px-4 py-2 flex items-center justify-between transition-colors">
