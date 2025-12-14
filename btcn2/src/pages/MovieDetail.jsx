@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { getMovieDetails } from "../services/api";
+import { ReviewItem } from "../components/review/ReviewItem";
 
 /**
  * MovieDetail - Trang chi tiết phim
@@ -226,44 +227,15 @@ export function MovieDetail() {
                 <div className="space-y-4">
                     {movie.reviews?.length > 0 ? (
                         movie.reviews.map((review) => (
-                            <div
+                            <ReviewItem
                                 key={review.id}
-                                className="bg-white dark:bg-slate-700 rounded-lg p-4 shadow-md"
-                            >
-                                {/* Review Header - Username, Date, Rating */}
-                                <div className="flex items-center justify-between mb-2">
-                                    <div className="flex items-center gap-2">
-                                        <span className="font-semibold dark:text-white">{review.author}</span>
-                                        {review.date && (
-                                            <span className="text-xs text-gray-400 dark:text-gray-500">
-                                                • {new Date(review.date).toLocaleDateString('en-US', {
-                                                    year: 'numeric',
-                                                    month: 'short',
-                                                    day: 'numeric'
-                                                })}
-                                            </span>
-                                        )}
-                                    </div>
-                                    {review.rating && (
-                                        <div className="flex items-center gap-1 text-yellow-500 text-sm">
-                                            <span>⭐</span>
-                                            <span>{review.rating}/10</span>
-                                        </div>
-                                    )}
-                                </div>
-                                {/* Review Title */}
-                                {review.title && (
-                                    <h4 className="font-medium text-gray-800 dark:text-gray-200 mb-1">{review.title}</h4>
-                                )}
-                                {/* Review Content */}
-                                <p className="text-gray-600 dark:text-gray-400 text-sm">
-                                    {review.content}
-                                </p>
-                                {/* Spoiler Warning */}
-                                {review.warning_spoilers && (
-                                    <p className="text-red-500 text-xs mt-2">⚠️ Contains spoilers</p>
-                                )}
-                            </div>
+                                username={review.author}
+                                rating={review.rating}
+                                title={review.title}
+                                content={review.content}
+                                date={review.date}
+                                isSpoiler={review.warning_spoilers}
+                            />
                         ))
                     ) : (
                         <p className="text-gray-500 dark:text-gray-400 text-center py-4">
