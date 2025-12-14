@@ -5,10 +5,14 @@ import { Search } from "./pages/Search";
 import { MovieDetail } from "./pages/MovieDetail";
 import { PersonDetail } from "./pages/PersonDetail";
 import { Auth } from "./pages/Auth";
+import { PrivateRoute, GuestRoute } from "./components/auth/PrivateRoute";
 import "./App.css";
 
 /**
  * App - Nơi khai báo Routing chính (Routes)
+ * - Public: Home, Search, MovieDetail, PersonDetail
+ * - Guest Only: Auth (Login/Register)
+ * - Private: Profile, Favorites
  * theo README structure
  */
 function App() {
@@ -16,13 +20,24 @@ function App() {
     <BrowserRouter>
       <div className="max-w-[1200px] mx-auto w-full">
         <Routes>
-          {/* MainLayout với Outlet cho các page con */}
+          {/* Public Routes - MainLayout với Outlet */}
           <Route path="/" element={<MainLayout />}>
+            {/* Public - Accessible to everyone */}
             <Route index element={<Home />} />
             <Route path="search" element={<Search />} />
             <Route path="movie/:id" element={<MovieDetail />} />
             <Route path="person/:id" element={<PersonDetail />} />
-            <Route path="auth" element={<Auth />} />
+
+            {/* Guest Only Routes - chỉ cho user chưa đăng nhập */}
+            <Route element={<GuestRoute />}>
+              <Route path="auth" element={<Auth />} />
+            </Route>
+
+            {/* Private Routes - cần đăng nhập */}
+            <Route element={<PrivateRoute />}>
+              <Route path="profile" element={<div className="p-4"><h1 className="text-xl font-bold dark:text-white">My Profile</h1><p className="text-gray-500 dark:text-gray-400">Coming soon...</p></div>} />
+              <Route path="favorites" element={<div className="p-4"><h1 className="text-xl font-bold dark:text-white">My Favorites</h1><p className="text-gray-500 dark:text-gray-400">Coming soon...</p></div>} />
+            </Route>
           </Route>
         </Routes>
       </div>
