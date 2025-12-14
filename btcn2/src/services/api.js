@@ -17,21 +17,37 @@ const API_BASE_URL = "/api";
 async function apiRequest(endpoint, options = {}) {
     const url = `${API_BASE_URL}${endpoint}`;
 
+    // Get user token for authenticated requests
+    const authToken = localStorage.getItem("authToken");
+
     const response = await fetch(url, {
         ...options,
         headers: {
             "accept": "application/json",
             "x-app-token": API_TOKEN,
+            // Add Authorization header if user is logged in
+            ...(authToken && { "Authorization": `Bearer ${authToken}` }),
             ...options.headers,
         },
     });
 
     if (!response.ok) {
-        throw new Error(`API Error: ${response.status} ${response.statusText}`);
+        // Try to get error message from response body
+        let errorMessage = `API Error: ${response.status} ${response.statusText}`;
+        try {
+            const errorData = await response.json();
+            if (errorData.message) {
+                errorMessage = errorData.message;
+            }
+        } catch (e) {
+            // Ignore JSON parse error
+        }
+        throw new Error(errorMessage);
     }
 
     return response.json();
 }
+
 
 
 
