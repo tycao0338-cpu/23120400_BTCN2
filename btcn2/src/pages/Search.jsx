@@ -48,16 +48,6 @@ export function Search() {
     return (
         <main className="flex-1 bg-gray-100 dark:bg-slate-800 transition-colors p-4">
             {/* Search Query Header */}
-            {query && (
-                <div className="mb-4">
-                    <h1 className="text-xl font-bold dark:text-white">
-                        Search results for "{query}"
-                    </h1>
-                    <p className="text-gray-600 dark:text-gray-400 text-sm">
-                        {pagination?.total_items || results.length} results found
-                    </p>
-                </div>
-            )}
 
             {/* Error State */}
             {error && (
