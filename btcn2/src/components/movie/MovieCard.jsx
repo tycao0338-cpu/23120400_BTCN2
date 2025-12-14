@@ -1,12 +1,15 @@
+import { Link } from "react-router-dom";
+
 /**
  * MovieCard - Component hiển thị card phim với hover effect
+ * - Wrapped với Link để navigate đến /movie/:id
  * - Scale up khi hover
  * - Z-index cao hơn (nổi lên trên)
  * - Hiển thị info overlay (title + year)
  * - Smooth transition
  */
 
-export function MovieCard({ movie, onClick }) {
+export function MovieCard({ movie }) {
     // Destructure movie data với default values
     const {
         id,
@@ -19,9 +22,9 @@ export function MovieCard({ movie, onClick }) {
     const year = release_date ? release_date.slice(0, 4) : "";
 
     return (
-        <div
-            onClick={() => onClick?.(id)}
-            className="relative w-48 rounded-lg overflow-visible cursor-pointer group"
+        <Link
+            to={`/movie/${id}`}
+            className="relative w-48 rounded-lg overflow-visible cursor-pointer group block"
         >
             {/* Card Container với hover effects */}
             <div className="relative h-72 rounded-lg overflow-hidden transition-all duration-300 ease-out group-hover:scale-125 group-hover:z-50 group-hover:shadow-2xl">
@@ -56,7 +59,7 @@ export function MovieCard({ movie, onClick }) {
                     )}
                 </div>
             </div>
-        </div>
+        </Link>
     );
 }
 
