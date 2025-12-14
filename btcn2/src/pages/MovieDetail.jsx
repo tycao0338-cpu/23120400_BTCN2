@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import { getMovieDetails } from "../services/api";
 
 /**
@@ -193,12 +193,13 @@ export function MovieDetail() {
                     <h2 className="text-xl font-bold dark:text-white mb-3">Cast</h2>
                     <div className="flex gap-4 overflow-x-auto pb-2">
                         {movie.actors.map((actor) => (
-                            <div
+                            <Link
+                                to={`/person/${actor.id}`}
                                 key={actor.id}
-                                className="flex-shrink-0 w-24 text-center"
+                                className="flex-shrink-0 w-24 text-center cursor-pointer group"
                             >
                                 {/* Actor Avatar */}
-                                <div className="w-20 h-20 mx-auto bg-gray-300 dark:bg-slate-600 rounded-full flex items-center justify-center overflow-hidden mb-2">
+                                <div className="w-20 h-20 mx-auto bg-gray-300 dark:bg-slate-600 rounded-full flex items-center justify-center overflow-hidden mb-2 group-hover:ring-2 group-hover:ring-sky-500 transition-all">
                                     {actor.image ? (
                                         <img
                                             src={actor.image}
@@ -211,9 +212,9 @@ export function MovieDetail() {
                                     )}
                                 </div>
                                 {/* Actor Name */}
-                                <p className="text-sm font-medium dark:text-white truncate">{actor.name}</p>
+                                <p className="text-sm font-medium dark:text-white truncate group-hover:text-sky-500 transition-colors">{actor.name}</p>
                                 <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{actor.character}</p>
-                            </div>
+                            </Link>
                         ))}
                     </div>
                 </section>
