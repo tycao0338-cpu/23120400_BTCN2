@@ -217,3 +217,38 @@ export async function getMovieDetails(movieId) {
         })),
     };
 }
+
+/**
+ * Get person details by ID
+ * @param {string} personId - Person ID (e.g., "nm0000122")
+ * @returns {Promise<object>} - Person details with known_for movies
+ */
+export async function getPersonDetails(personId) {
+    if (!personId) {
+        throw new Error("Person ID is required");
+    }
+
+    const result = await apiRequest(`/persons/${encodeURIComponent(personId)}`);
+
+    return {
+        id: result.id,
+        name: result.name,
+        role: result.role,
+        image: result.image,
+        summary: result.summary,
+        birth_date: result.birth_date,
+        death_date: result.death_date,
+        height: result.height,
+        known_for: (result.known_for || []).map((m) => ({
+            id: m.id,
+            title: m.title,
+            release_date: m.year?.toString() || "",
+            poster_path: m.image,
+            rating: m.rate,
+            short_description: m.short_description,
+            genres: m.genres || [],
+            role: m.role,
+            character: m.character,
+        })),
+    };
+}
