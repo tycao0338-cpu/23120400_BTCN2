@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { MovieCard } from "./MovieCard";
 
 /**
@@ -42,7 +43,7 @@ export function MovieRow({ title, movies = [], isLoading = false, moviesPerPage 
                     disabled={movies.length === 0}
                     className="absolute left-50 z-10 w-8 h-8 bg-white dark:bg-slate-600 rounded-full shadow-md flex items-center justify-center hover:bg-gray-100 dark:hover:bg-slate-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
-                    <span className="text-gray-600 dark:text-white text-lg">‹</span>
+                    <ChevronLeft size={20} className="text-gray-600 dark:text-white" />
                 </button>
 
                 {/* Movie Cards Container */}
@@ -74,7 +75,7 @@ export function MovieRow({ title, movies = [], isLoading = false, moviesPerPage 
                     disabled={movies.length === 0}
                     className="absolute right-50 z-10 w-8 h-8 bg-white dark:bg-slate-600 rounded-full shadow-md flex items-center justify-center hover:bg-gray-100 dark:hover:bg-slate-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
-                    <span className="text-gray-600 dark:text-white text-lg">›</span>
+                    <ChevronRight size={20} className="text-gray-600 dark:text-white" />
                 </button>
             </div>
 

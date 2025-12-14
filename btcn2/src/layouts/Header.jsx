@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { NavBar } from "./NavBar";
 import { useTheme } from "../hooks/useTheme";
 import { logoutUser } from "../services/api";
+import { Moon, Sun, User, Heart, LogOut } from "lucide-react";
 
 /**
  * Header - Layout component containing top bar and navigation
@@ -107,7 +108,7 @@ export function Header() {
                             className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${isDark ? "left-[22px]" : "left-0.5"}`}
                         ></span>
                     </button>
-                    <span className="text-xl">{isDark ? "🌙" : "☀️"}</span>
+                    {isDark ? <Moon size={20} /> : <Sun size={20} />}
 
                     {/* User Section */}
                     {user ? (
@@ -135,14 +136,14 @@ export function Header() {
                                         onClick={() => setDropdownOpen(false)}
                                         className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-600"
                                     >
-                                        👤 My Profile
+                                        <User size={16} /> My Profile
                                     </Link>
                                     <Link
                                         to="/favorites"
                                         onClick={() => setDropdownOpen(false)}
                                         className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-600"
                                     >
-                                        ❤️ My Favorites
+                                        <Heart size={16} /> My Favorites
                                     </Link>
 
                                     {/* Separator */}
@@ -153,7 +154,7 @@ export function Header() {
                                         onClick={handleLogout}
                                         className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
                                     >
-                                        🚪 Logout
+                                        <LogOut size={16} /> Logout
                                     </button>
                                 </div>
                             )}
@@ -187,8 +188,8 @@ export function Header() {
             {toast && (
                 <div className="fixed top-4 right-4 z-50 animate-pulse">
                     <div className={`px-4 py-3 rounded-lg shadow-lg ${toast.type === "success"
-                            ? "bg-green-500 text-white"
-                            : "bg-red-500 text-white"
+                        ? "bg-green-500 text-white"
+                        : "bg-red-500 text-white"
                         }`}>
                         <div className="flex items-center gap-2">
                             <span>{toast.type === "success" ? "✅" : "❌"}</span>

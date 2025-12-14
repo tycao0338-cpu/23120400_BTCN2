@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerUser, loginUser } from "../services/api";
 import { loginSchema, registerSchema } from "../lib/schemas";
+import { ArrowLeft } from "lucide-react";
 
 /**
  * Auth - Trang đăng nhập và đăng ký
@@ -101,7 +102,7 @@ export function Auth() {
                     to="/"
                     className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors mb-4"
                 >
-                    <span>←</span>
+                    <ArrowLeft size={18} />
                     <span>Back to Home</span>
                 </Link>
 
@@ -113,8 +114,8 @@ export function Auth() {
                             type="button"
                             onClick={() => switchTab("login")}
                             className={`flex-1 py-3 text-center font-medium transition-colors ${activeTab === "login"
-                                    ? "bg-sky-500 text-white"
-                                    : "bg-gray-100 dark:bg-slate-600 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-500"
+                                ? "bg-sky-500 text-white"
+                                : "bg-gray-100 dark:bg-slate-600 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-500"
                                 }`}
                         >
                             Login
@@ -123,8 +124,8 @@ export function Auth() {
                             type="button"
                             onClick={() => switchTab("register")}
                             className={`flex-1 py-3 text-center font-medium transition-colors ${activeTab === "register"
-                                    ? "bg-sky-500 text-white"
-                                    : "bg-gray-100 dark:bg-slate-600 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-500"
+                                ? "bg-sky-500 text-white"
+                                : "bg-gray-100 dark:bg-slate-600 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-500"
                                 }`}
                         >
                             Register

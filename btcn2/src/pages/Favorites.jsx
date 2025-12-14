@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getUserFavorites, removeFromFavorites, getMovieDetails } from "../services/api";
 import { MovieCard } from "../components/movie/MovieCard";
+import { Heart, HeartCrack, ChevronLeft, ChevronRight, Film } from "lucide-react";
 
 /**
  * Favorites - Trang hiển thị danh sách phim yêu thích
@@ -92,8 +93,8 @@ export function Favorites() {
     return (
         <main className="flex-1 bg-gray-100 dark:bg-slate-800 transition-colors p-4">
             {/* Header */}
-            <h1 className="text-2xl font-bold dark:text-white mb-6">
-                ❤️ My Favorite Movies
+            <h1 className="text-2xl font-bold dark:text-white mb-6 flex items-center gap-2">
+                <Heart size={24} className="text-red-500" /> My Favorite Movies
             </h1>
 
             {/* Loading State */}
@@ -112,7 +113,7 @@ export function Favorites() {
                         disabled={currentPage <= 1}
                         className="absolute left-50 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white dark:bg-slate-600 rounded-full shadow-md flex items-center justify-center hover:bg-gray-100 dark:hover:bg-slate-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                     >
-                        <span className="text-gray-600 dark:text-white text-xl">‹</span>
+                        <ChevronLeft size={20} className="text-gray-600 dark:text-white" />
                     </button>
 
                     {/* Movie Cards */}
@@ -133,7 +134,7 @@ export function Favorites() {
                         disabled={currentPage >= totalPages}
                         className="absolute right-50 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white dark:bg-slate-600 rounded-full shadow-md flex items-center justify-center hover:bg-gray-100 dark:hover:bg-slate-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                     >
-                        <span className="text-gray-600 dark:text-white text-xl">›</span>
+                        <ChevronRight size={20} className="text-gray-600 dark:text-white" />
                     </button>
 
                     {/* Page Dots Indicator */}
@@ -158,7 +159,7 @@ export function Favorites() {
             {/* Empty State */}
             {!isLoading && favorites.length === 0 && (
                 <div className="text-center py-16">
-                    <div className="text-6xl mb-4">💔</div>
+                    <HeartCrack size={64} className="mx-auto mb-4 text-gray-400" />
                     <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
                         You haven't added any favorites yet
                     </h3>
@@ -167,9 +168,9 @@ export function Favorites() {
                     </p>
                     <Link
                         to="/"
-                        className="inline-block px-6 py-3 bg-sky-500 hover:bg-sky-600 text-white font-medium rounded-lg transition-colors"
+                        className="inline-flex items-center gap-2 px-6 py-3 bg-sky-500 hover:bg-sky-600 text-white font-medium rounded-lg transition-colors"
                     >
-                        🎬 Find Movies
+                        <Film size={20} /> Find Movies
                     </Link>
                 </div>
             )}

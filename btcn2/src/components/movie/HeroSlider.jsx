@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 /**
  * HeroSlider - Slider to ở trang chủ hiển thị phim
@@ -87,7 +88,7 @@ export function HeroSlider({ movies = [] }) {
                 className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/20 hover:bg-white/40 rounded-full flex items-center justify-center transition-all opacity-0 group-hover:opacity-100"
                 aria-label="Previous movie"
             >
-                <span className="text-white text-2xl">‹</span>
+                <ChevronLeft size={24} className="text-white" />
             </button>
 
             <button
@@ -95,7 +96,7 @@ export function HeroSlider({ movies = [] }) {
                 className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/20 hover:bg-white/40 rounded-full flex items-center justify-center transition-all opacity-0 group-hover:opacity-100"
                 aria-label="Next movie"
             >
-                <span className="text-white text-2xl">›</span>
+                <ChevronRight size={24} className="text-white" />
             </button>
 
             {/* Dots Indicator - Prevent navigation on click */}

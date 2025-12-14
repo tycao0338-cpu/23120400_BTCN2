@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Trash2, Loader } from "lucide-react";
 
 /**
  * MovieCard - Component hiển thị card phim với hover effect
@@ -43,9 +44,9 @@ export function MovieCard({ movie, onRemove, isRemoving }) {
                     title="Remove from favorites"
                 >
                     {isRemoving ? (
-                        <span className="text-xs">⏳</span>
+                        <Loader size={14} className="animate-spin" />
                     ) : (
-                        <span className="text-xs">🗑️</span>
+                        <Trash2 size={14} />
                     )}
                 </button>
             )}
