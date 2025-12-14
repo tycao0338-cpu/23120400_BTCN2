@@ -3,6 +3,7 @@ import { MainLayout } from "./layouts/MainLayout";
 import { Home } from "./pages/Home";
 import { Search } from "./pages/Search";
 import { MovieDetail } from "./pages/MovieDetail";
+import { PersonDetail } from "./pages/PersonDetail";
 import "./App.css";
 
 /**
@@ -19,6 +20,7 @@ function App() {
             <Route index element={<Home />} />
             <Route path="search" element={<Search />} />
             <Route path="movie/:id" element={<MovieDetail />} />
+            <Route path="person/:id" element={<PersonDetail />} />
           </Route>
         </Routes>
       </div>
