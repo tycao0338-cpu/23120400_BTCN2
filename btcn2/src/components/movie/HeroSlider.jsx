@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 /**
  * HeroSlider - Slider to ở trang chủ hiển thị phim
+ * - Clickable backdrop/title navigates to /movie/:id
  * Located in: src/components/movie/ (theo README structure)
  */
 export function HeroSlider({ movies = [] }) {
@@ -18,16 +20,26 @@ export function HeroSlider({ movies = [] }) {
         return () => clearInterval(timer);
     }, [movies.length]);
 
-    const goToPrevious = () => {
+    const goToPrevious = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         setCurrentIndex((prev) =>
             prev === 0 ? movies.length - 1 : prev - 1
         );
     };
 
-    const goToNext = () => {
+    const goToNext = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         setCurrentIndex((prev) =>
             (prev + 1) % movies.length
         );
+    };
+
+    const handleDotClick = (e, index) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setCurrentIndex(index);
     };
 
     // Placeholder khi chưa có data
@@ -42,8 +54,11 @@ export function HeroSlider({ movies = [] }) {
     const currentMovie = movies[currentIndex];
 
     return (
-        <div className="relative h-80 m-4 rounded-lg overflow-hidden group">
-            {/* Movie Poster as Background */}
+        <Link
+            to={`/movie/${currentMovie.id}`}
+            className="relative h-80 m-4 rounded-lg overflow-hidden group block cursor-pointer"
+        >
+            {/* Movie Poster as Background - Clickable */}
             <div
                 className="absolute inset-0 bg-cover bg-center transition-all duration-500"
                 style={{
@@ -54,9 +69,9 @@ export function HeroSlider({ movies = [] }) {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
             </div>
 
-            {/* Movie Info */}
+            {/* Movie Info - Clickable */}
             <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                <h2 className="text-2xl font-bold mb-1">
+                <h2 className="text-2xl font-bold mb-1 hover:underline">
                     {currentMovie.title} ({currentMovie.release_date || "N/A"})
                 </h2>
                 <p className="text-sm text-gray-300">
@@ -66,7 +81,7 @@ export function HeroSlider({ movies = [] }) {
                 </p>
             </div>
 
-            {/* Navigation Arrows */}
+            {/* Navigation Arrows - Prevent navigation on click */}
             <button
                 onClick={goToPrevious}
                 className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/20 hover:bg-white/40 rounded-full flex items-center justify-center transition-all opacity-0 group-hover:opacity-100"
@@ -83,12 +98,12 @@ export function HeroSlider({ movies = [] }) {
                 <span className="text-white text-2xl">›</span>
             </button>
 
-            {/* Dots Indicator */}
+            {/* Dots Indicator - Prevent navigation on click */}
             <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2">
                 {movies.map((_, index) => (
                     <button
                         key={index}
-                        onClick={() => setCurrentIndex(index)}
+                        onClick={(e) => handleDotClick(e, index)}
                         className={`w-2 h-2 rounded-full transition-all ${index === currentIndex
                             ? "bg-white w-4"
                             : "bg-white/50 hover:bg-white/80"
@@ -97,7 +112,7 @@ export function HeroSlider({ movies = [] }) {
                     />
                 ))}
             </div>
-        </div>
+        </Link>
     );
 }
 
