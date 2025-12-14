@@ -103,10 +103,20 @@ export function Favorites() {
                 </div>
             )}
 
-            {/* Movies Grid */}
+            {/* Movies Section with Arrows */}
             {!isLoading && favorites.length > 0 && (
-                <>
-                    <div className="flex flex-wrap gap-4 justify-center">
+                <div className="relative">
+                    {/* Left Arrow */}
+                    <button
+                        onClick={() => goToPage(currentPage - 1)}
+                        disabled={currentPage <= 1}
+                        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white dark:bg-slate-600 rounded-full shadow-md flex items-center justify-center hover:bg-gray-100 dark:hover:bg-slate-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                    >
+                        <span className="text-gray-600 dark:text-white text-xl">‹</span>
+                    </button>
+
+                    {/* Movie Cards */}
+                    <div className="flex gap-4 justify-center px-14 min-h-[320px]">
                         {paginatedFavorites.map((movie) => (
                             <MovieCard
                                 key={movie.id}
@@ -117,29 +127,32 @@ export function Favorites() {
                         ))}
                     </div>
 
-                    {/* Pagination Controls */}
+                    {/* Right Arrow */}
+                    <button
+                        onClick={() => goToPage(currentPage + 1)}
+                        disabled={currentPage >= totalPages}
+                        className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white dark:bg-slate-600 rounded-full shadow-md flex items-center justify-center hover:bg-gray-100 dark:hover:bg-slate-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                    >
+                        <span className="text-gray-600 dark:text-white text-xl">›</span>
+                    </button>
+
+                    {/* Page Dots Indicator */}
                     {totalPages > 1 && (
-                        <div className="flex items-center justify-center gap-4 mt-6">
-                            <button
-                                onClick={() => goToPage(currentPage - 1)}
-                                disabled={currentPage <= 1}
-                                className="px-4 py-2 bg-sky-500 hover:bg-sky-600 disabled:bg-gray-300 dark:disabled:bg-slate-600 text-white disabled:text-gray-500 rounded-lg transition-colors disabled:cursor-not-allowed"
-                            >
-                                ← Previous
-                            </button>
-                            <span className="text-gray-600 dark:text-gray-400">
-                                Page {currentPage} of {totalPages}
-                            </span>
-                            <button
-                                onClick={() => goToPage(currentPage + 1)}
-                                disabled={currentPage >= totalPages}
-                                className="px-4 py-2 bg-sky-500 hover:bg-sky-600 disabled:bg-gray-300 dark:disabled:bg-slate-600 text-white disabled:text-gray-500 rounded-lg transition-colors disabled:cursor-not-allowed"
-                            >
-                                Next →
-                            </button>
+                        <div className="flex justify-center gap-2 mt-4">
+                            {Array.from({ length: totalPages }).map((_, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => goToPage(index + 1)}
+                                    className={`w-2 h-2 rounded-full transition-all ${index + 1 === currentPage
+                                            ? "bg-sky-500 w-4"
+                                            : "bg-gray-300 dark:bg-slate-600 hover:bg-gray-400"
+                                        }`}
+                                    aria-label={`Go to page ${index + 1}`}
+                                />
+                            ))}
                         </div>
                     )}
-                </>
+                </div>
             )}
 
             {/* Empty State */}
