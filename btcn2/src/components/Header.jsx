@@ -15,14 +15,25 @@ export function Header() {
                     <h1 className="text-white font-semibold text-lg">Movies info</h1>
                 </div>
 
-                {/* User Icon */}
-                <div className="bg-sky-400 px-4 h-full flex items-center">
-                    <span className="text-white text-xl">👤</span>
+                {/* Theme Toggle & User Icon */}
+                <div className="bg-sky-400 px-4 h-full flex items-center gap-3">
+                    {/* Sun Icon */}
+
+
+                    {/* Toggle Switch */}
+                    <button className="relative w-10 h-5 bg-white/30 rounded-full transition-colors">
+                        <span className="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform"></span>
+                    </button>
+
+                    {/* User Icon */}
+                    <span className="text-yellow-300 text-xl">☀️</span>
                 </div>
             </div>
 
             {/* Navigation Bar */}
-            <NavBar />
+            <div className="mt-[5px]">
+                <NavBar />
+            </div>
         </header>
     );
 }
