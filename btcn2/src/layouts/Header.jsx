@@ -94,7 +94,7 @@ export function Header() {
                     to="/"
                     className="flex-1 h-full flex items-center justify-center cursor-pointer hover:bg-white/10 transition-colors"
                 >
-                    <h1 className="text-white font-bold text-xl tracking-wide drop-shadow-sm">🎬 Movies Info</h1>
+                    <h1 className="text-white font-bold text-xl tracking-wide drop-shadow-sm">Movies Info</h1>
                 </Link>
 
                 {/* Theme Toggle & User Section */}
@@ -133,13 +133,7 @@ export function Header() {
                                     </div>
 
                                     {/* Menu Items */}
-                                    <Link
-                                        to="/profile"
-                                        onClick={() => setDropdownOpen(false)}
-                                        className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-600"
-                                    >
-                                        <User size={16} /> My Profile
-                                    </Link>
+
                                     <Link
                                         to="/favorites"
                                         onClick={() => setDropdownOpen(false)}

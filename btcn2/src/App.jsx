@@ -36,7 +36,6 @@ function App() {
 
             {/* Private Routes - cần đăng nhập */}
             <Route element={<PrivateRoute />}>
-              <Route path="profile" element={<div className="p-4"><h1 className="text-xl font-bold dark:text-white">My Profile</h1><p className="text-gray-500 dark:text-gray-400">Coming soon...</p></div>} />
               <Route path="favorites" element={<Favorites />} />
             </Route>
           </Route>
