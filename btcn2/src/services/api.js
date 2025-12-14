@@ -121,3 +121,41 @@ export async function searchMovies(title, page = 1, limit = 10) {
     };
 }
 
+/**
+ * Search movies by person (actor/director/screenwriter)
+ * @param {string} person - Person name to search
+ * @param {number} page - Page number (1-indexed)
+ * @param {number} limit - Number of movies per page
+ * @returns {Promise<{data: Array, pagination: object}>}
+ */
+export async function searchByPerson(person, page = 1, limit = 10) {
+    if (!person || person.trim() === "") {
+        return {
+            data: [],
+            pagination: { total_items: 0, current_page: 1, total_pages: 0, page_size: limit }
+        };
+    }
+
+    const result = await apiRequest(
+        `/movies/search?person=${encodeURIComponent(person)}&page=${page}&limit=${limit}`
+    );
+
+    return {
+        data: result.data.map((movie) => ({
+            id: movie.id,
+            title: movie.title,
+            release_date: movie.year?.toString() || "",
+            poster_path: movie.image,
+            rating: movie.rate,
+            description: movie.short_description,
+            genres: movie.genres || [],
+        })),
+        pagination: result.pagination || {
+            total_items: result.data.length,
+            current_page: page,
+            total_pages: 1,
+            page_size: limit
+        }
+    };
+}
+

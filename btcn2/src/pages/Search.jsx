@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { searchMovies } from "../services/api";
+import { searchMovies, searchByPerson } from "../services/api";
 
 /**
  * Search - Trang tìm kiếm phim
  * - Đọc query và searchBy từ URL (?q=...&by=...)
- * - Hỗ trợ: by=title (default) và by=person
- * - Kết quả luôn là movies (Grid layout)
+ * - by=title: ?title=avatar
+ * - by=person: ?person=tom
+ * - Kết quả luôn là movies (Grid layout với MovieCard)
  * Located in: src/pages/ (theo README structure)
  */
 
@@ -32,17 +33,18 @@ export function Search() {
             setError(null);
 
             try {
+                let response;
+
                 if (searchBy === "title") {
-                    // Search by movie title
-                    const response = await searchMovies(query, 1, 20);
-                    setResults(response.data);
-                    setPagination(response.pagination);
+                    // Search by movie title: ?title=avatar
+                    response = await searchMovies(query, 1, 10);
                 } else {
-                    // TODO: Search by person (actor/director) - API sẽ tích hợp trong commit 2
-                    // Placeholder: hiển thị message chờ API
-                    setResults([]);
-                    setPagination(null);
+                    // Search by person: ?person=tom
+                    response = await searchByPerson(query, 1, 10);
                 }
+
+                setResults(response.data);
+                setPagination(response.pagination);
             } catch (err) {
                 console.error("Search error:", err);
                 setError(err.message);
@@ -88,23 +90,10 @@ export function Search() {
                 </div>
             )}
 
-            {/* No Results - Person search (API chưa tích hợp) */}
-            {!isLoading && !error && query && results.length === 0 && searchBy === "person" && (
+            {/* No Results */}
+            {!isLoading && !error && query && results.length === 0 && (
                 <div className="text-center py-16">
-                    <div className="text-6xl mb-4">🎭</div>
-                    <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                        Search by Person
-                    </h3>
-                    <p className="text-gray-500 dark:text-gray-400">
-                        API will be integrated in the next commit
-                    </p>
-                </div>
-            )}
-
-            {/* No Results - Title search */}
-            {!isLoading && !error && query && results.length === 0 && searchBy === "title" && (
-                <div className="text-center py-16">
-                    <div className="text-6xl mb-4">🎬</div>
+                    <div className="text-6xl mb-4">{searchBy === "person" ? "🎭" : "🎬"}</div>
                     <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
                         No movies found
                     </h3>
@@ -132,7 +121,6 @@ export function Search() {
 
 /**
  * MovieCard - Card hiển thị kết quả tìm kiếm
- * Output luôn là movies nên dùng chung MovieCard
  */
 function MovieCard({ movie }) {
     const { id, title, rating, release_date, poster_path } = movie;
