@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { getMovieDetails, getMovieReviews, addToFavorites } from "../services/api";
 import { ReviewItem } from "../components/review/ReviewItem";
+import { ArrowLeft, Heart, Star, Film, User, ChevronLeft, ChevronRight, Loader } from "lucide-react";
 
 /**
  * MovieDetail - Trang chi tiết phim
@@ -122,7 +123,7 @@ export function MovieDetail() {
                     onClick={() => navigate(-1)}
                     className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors mb-4"
                 >
-                    <span className="text-xl">←</span>
+                    <ArrowLeft size={20} />
                     <span>Back</span>
                 </button>
                 <div className="text-center py-16">
@@ -148,7 +149,7 @@ export function MovieDetail() {
                     <span>Back</span>
                 </button>
                 <div className="text-center py-16">
-                    <div className="text-6xl mb-4">🎬</div>
+                    <Film size={64} className="mx-auto mb-4 text-gray-400" />
                     <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
                         Movie not found
                     </h3>
@@ -187,7 +188,7 @@ export function MovieDetail() {
                                     onError={(e) => { e.target.style.display = "none"; }}
                                 />
                             ) : (
-                                <span className="text-gray-400 dark:text-gray-500 text-6xl">🎬</span>
+                                <Film size={64} className="text-gray-400 dark:text-gray-500" />
                             )}
                         </div>
                     </div>
@@ -207,14 +208,18 @@ export function MovieDetail() {
                                     className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-slate-600 transition-colors disabled:opacity-50"
                                     title={isFavorite ? "Remove from favorites" : "Add to favorites"}
                                 >
-                                    <span className="text-2xl">
-                                        {favoriteLoading ? "⏳" : isFavorite ? "❤️" : "🤍"}
-                                    </span>
+                                    {favoriteLoading ? (
+                                        <Loader size={24} className="animate-spin text-gray-500" />
+                                    ) : isFavorite ? (
+                                        <Heart size={24} className="text-red-500 fill-red-500" />
+                                    ) : (
+                                        <Heart size={24} className="text-gray-400" />
+                                    )}
                                 </button>
                             </div>
                             {movie.rating && (
                                 <div className="flex items-center gap-1 text-yellow-500 text-lg">
-                                    <span>⭐</span>
+                                    <Star size={20} className="fill-yellow-500" />
                                     <span className="font-bold">{movie.rating}</span>
                                 </div>
                             )}
@@ -280,7 +285,7 @@ export function MovieDetail() {
                                             onError={(e) => { e.target.style.display = "none"; }}
                                         />
                                     ) : (
-                                        <span className="text-gray-400 dark:text-gray-500 text-2xl">👤</span>
+                                        <User size={24} className="text-gray-400 dark:text-gray-500" />
                                     )}
                                 </div>
                                 {/* Actor Name */}
@@ -336,7 +341,7 @@ export function MovieDetail() {
                             disabled={reviewsPage <= 1}
                             className="px-3 py-1.5 bg-sky-500 hover:bg-sky-600 disabled:bg-gray-300 dark:disabled:bg-slate-600 text-white disabled:text-gray-500 rounded transition-colors disabled:cursor-not-allowed text-sm"
                         >
-                            ← Prev
+                            <ChevronLeft size={16} /> Prev
                         </button>
                         <span className="text-gray-600 dark:text-gray-400 text-sm">
                             {reviewsPage} / {reviewsPagination.total_pages}
@@ -346,7 +351,7 @@ export function MovieDetail() {
                             disabled={reviewsPage >= reviewsPagination.total_pages}
                             className="px-3 py-1.5 bg-sky-500 hover:bg-sky-600 disabled:bg-gray-300 dark:disabled:bg-slate-600 text-white disabled:text-gray-500 rounded transition-colors disabled:cursor-not-allowed text-sm"
                         >
-                            Next →
+                            Next <ChevronRight size={16} />
                         </button>
                     </div>
                 )}
