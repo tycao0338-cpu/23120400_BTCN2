@@ -368,3 +368,16 @@ export async function addToFavorites(movieId) {
 
     return result;
 }
+
+/**
+ * Get user's favorite movies
+ * @returns {Promise<Array>} - List of favorite movies
+ */
+export async function getUserFavorites() {
+    const result = await apiRequest("/users/favorites", {
+        method: "GET",
+    });
+
+    // Return the favorites array or empty array
+    return result?.favorites || result || [];
+}
