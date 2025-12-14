@@ -1,0 +1,25 @@
+MSSV : 23120400  Họ Tên : Cao Quốc Tý
+Danh sách thang điểm:
+0.5 điểm (100%): Giao diện cơ bản với bố cục và các thành phần yêu cầu (chưa có dữ liệu movie, điền đủ thông tin).
+0.5 điểm (100%): Thực hiện được chế độ Dark mode.
+0.5 điểm (100%): Danh sách 5 Movie có doanh thu cao nhất hiển thị như yêu cầu (slide) với thông tin cơ bản.
+0.5 điểm (100%): Danh sách 15~30 Movie phổ biến nhất hiển thị như yêu cầu (slide).
+0.5 điểm (100%): Hiệu ứng highlight khi hover Movie như yêu cầu (có thêm một số thông tin).
+0.5 điểm (100%): Danh sách 15~30 Movie thứ hạng cao nhất hiển thị như yêu cầu.
+0.5 điểm (100%): Liên kết để chuyển sang xem chi tiết Movie ở bất kỳ Movie nào trên bất kỳ danh sách nào.
+0.5 điểm (100%): Thực hiện tìm kiếm Movie theo tên và hiển thị theo dạng CardView với thông tin cơ bản.
+0.5 điểm (100%): Thực hiện tìm kiếm Movie theo Diễn viên/Đạo diễn/Biên kịch.
+1 điểm (100%): Xem chi tiết Movie (hiển thị hình ảnh, tiêu đề, năm, đạo diễn, tóm tắt, diễn viên, thể loại).
+1 điểm (100%): Xem thông tin chi tiết diễn viên (hiển thị ảnh, tên, tiểu sử, danh sách phim tham gia).
+0.5 điểm (100%): Trong phần chi tiết Movie hiển thị được reviews cho Movie.
+0.5 điểm (100%): Thực hiện được chức năng về Home và có hiệu ứng Loading.
+1 điểm (100%): Có phân trang ở tất cả các danh sách: kết quả tìm kiếm, danh sách phim của person, danh sách reviews, danh sách yêu thích.
+0.5 điểm (100%): Đủ các chức năng registry, login, logout.
+0.5 điểm (100%): Có form validation đầy đủ.
+0.5 điểm (100%): Kiểm soát đúng luồng authentication (chặn truy cập trái phép).
+0.5 điểm (100%): Thêm được phim yêu thích.
+0.5 điểm (100%): Quản lý danh sách phim yêu thích (xem, xóa).
+
+--------------------------------------------------
+Tổng điểm đạt được: 11.0 / 11.0
+Điểm tự đánh giá: 11 điểm 
