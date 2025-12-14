@@ -57,10 +57,12 @@ export function HeroCarousel({ movies = [] }) {
             {/* Movie Info */}
             <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
                 <h2 className="text-2xl font-bold mb-1">
-                    {currentMovie.title} ({currentMovie.release_date?.slice(0, 4) || "N/A"})
+                    {currentMovie.title} ({currentMovie.release_date || "N/A"})
                 </h2>
                 <p className="text-sm text-gray-300">
-                    {currentMovie.genres?.join(", ") || "Action, Adventure"}
+                    {currentMovie.genres?.length > 0
+                        ? currentMovie.genres.join(", ")
+                        : "Action, Adventure"}
                 </p>
             </div>
 
@@ -88,8 +90,8 @@ export function HeroCarousel({ movies = [] }) {
                         key={index}
                         onClick={() => setCurrentIndex(index)}
                         className={`w-2 h-2 rounded-full transition-all ${index === currentIndex
-                                ? "bg-white w-4"
-                                : "bg-white/50 hover:bg-white/80"
+                            ? "bg-white w-4"
+                            : "bg-white/50 hover:bg-white/80"
                             }`}
                         aria-label={`Go to slide ${index + 1}`}
                     />

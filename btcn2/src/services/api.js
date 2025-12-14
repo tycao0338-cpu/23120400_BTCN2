@@ -1,70 +1,63 @@
-// Mock Movie API Service
-// Simulates TMDB-like API responses with pagination
+/**
+ * Movie API Service
+ * Xử lý gọi API tập trung - theo cấu trúc src/services
+ */
 
-const MOCK_MOVIES = [
-];
+import { API_TOKEN } from "./config";
 
-// Simulate network delay
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+// API Base URL - sử dụng proxy để bypass CORS
+const API_BASE_URL = "/api";
 
 /**
- * Get top-rated movies with pagination
- * @param {number} page - Page number (1-indexed)
- * @returns {Promise<{results: Array, page: number, total_pages: number, total_results: number}>}
+ * Helper function to make API requests
+ * @param {string} endpoint - API endpoint
+ * @param {object} options - Fetch options
+ * @returns {Promise<any>}
  */
-export async function getTopRated(page = 1) {
-    await delay(300); // Simulate network delay
+async function apiRequest(endpoint, options = {}) {
+    const url = `${API_BASE_URL}${endpoint}`;
 
-    const itemsPerPage = 4;
-    const totalResults = MOCK_MOVIES.length;
-    const totalPages = Math.ceil(totalResults / itemsPerPage);
+    const response = await fetch(url, {
+        ...options,
+        headers: {
+            "accept": "application/json",
+            "x-app-token": API_TOKEN,
+            ...options.headers,
+        },
+    });
 
-    const startIndex = (page - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const results = MOCK_MOVIES.slice(startIndex, endIndex);
-
-    return {
-        results,
-        page,
-        total_pages: totalPages,
-        total_results: totalResults
-    };
-}
-
-/**
- * Search movies with pagination
- * @param {string} query - Search query
- * @param {number} page - Page number (1-indexed)
- * @returns {Promise<{results: Array, page: number, total_pages: number, total_results: number}>}
- */
-export async function searchMovies(query, page = 1) {
-    await delay(300); // Simulate network delay
-
-    if (!query || query.trim() === '') {
-        return {
-            results: [],
-            page: 1,
-            total_pages: 0,
-            total_results: 0
-        };
+    if (!response.ok) {
+        throw new Error(`API Error: ${response.status} ${response.statusText}`);
     }
 
-    const filteredMovies = MOCK_MOVIES.filter(movie =>
-        movie.title.toLowerCase().includes(query.toLowerCase())
-    );
-
-    const itemsPerPage = 4;
-    const totalResults = filteredMovies.length;
-    const totalPages = Math.ceil(totalResults / itemsPerPage);
-
-    const startIndex = (page - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const results = filteredMovies.slice(startIndex, endIndex);
-
-    return {
-        results,
-        page,
-        total_pages: totalPages,
-        total_results: totalResults
-    };
+    return response.json();
 }
+
+
+
+
+
+
+/**
+ * Get most popular movies
+ * @param {number} page - Page number (1-indexed)
+ * @param {number} limit - Number of movies to fetch
+ * @returns {Promise<Array>} - Array of movies
+ */
+export async function getMostPopular(page = 1, limit = 5) {
+    const result = await apiRequest(`/movies/most-popular?page=${page}&limit=${limit}`);
+
+    return result.data.map((movie) => ({
+        id: movie.id,
+        title: movie.title,
+        release_date: movie.year?.toString() || "",
+        poster_path: movie.image,
+        rating: movie.rate,
+        description: movie.short_description,
+        genres: movie.genres || [],
+        revenue: movie.box_office_revenue,
+    }));
+}
+
+
+
