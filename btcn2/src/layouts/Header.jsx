@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { NavBar } from "./NavBar";
 import { useTheme } from "../hooks/useTheme";
+import { logoutUser } from "../services/api";
 
 /**
  * Header - Layout component containing top bar and navigation
@@ -16,6 +17,7 @@ export function Header() {
     // User state from localStorage
     const [user, setUser] = useState(null);
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [toast, setToast] = useState(null);
     const dropdownRef = useRef(null);
 
     // Check localStorage for user on mount
@@ -41,12 +43,33 @@ export function Header() {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
+    // Auto hide toast after 3s
+    useEffect(() => {
+        if (toast) {
+            const timer = setTimeout(() => setToast(null), 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [toast]);
+
     // Logout handler
-    const handleLogout = () => {
+    const handleLogout = async () => {
+        try {
+            // Call logout API
+            await logoutUser();
+        } catch (err) {
+            console.error("Logout API error:", err);
+        }
+
+        // Clear localStorage regardless of API result
         localStorage.removeItem("authToken");
         localStorage.removeItem("user");
         setUser(null);
         setDropdownOpen(false);
+
+        // Show toast notification
+        setToast({ message: "Logged out successfully", type: "success" });
+
+        // Navigate to home
         navigate("/");
     };
 
@@ -159,6 +182,21 @@ export function Header() {
             <div className="mt-[5px]">
                 <NavBar />
             </div>
+
+            {/* Toast Notification */}
+            {toast && (
+                <div className="fixed top-4 right-4 z-50 animate-pulse">
+                    <div className={`px-4 py-3 rounded-lg shadow-lg ${toast.type === "success"
+                            ? "bg-green-500 text-white"
+                            : "bg-red-500 text-white"
+                        }`}>
+                        <div className="flex items-center gap-2">
+                            <span>{toast.type === "success" ? "✅" : "❌"}</span>
+                            <span>{toast.message}</span>
+                        </div>
+                    </div>
+                </div>
+            )}
         </header>
     );
 }

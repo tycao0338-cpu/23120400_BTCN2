@@ -339,3 +339,15 @@ export async function loginUser(username, password) {
 
     return result;
 }
+
+/**
+ * Logout user
+ * @returns {Promise<object>} - Logout result
+ */
+export async function logoutUser() {
+    const result = await apiRequest("/users/logout", {
+        method: "POST",
+    });
+
+    return result;
+}
