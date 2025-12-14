@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Header } from "./components/Header";
 import { Footer } from "./components/Footer";
-import { HomePage } from "./pages/HomePage";
+import { Main } from "./components/Main";
 import "./App.css";
 
 function App() {
@@ -9,11 +9,7 @@ function App() {
     <BrowserRouter>
       <div className="min-h-screen bg-white flex flex-col max-w-[1200px] mx-auto w-full">
         <Header />
-        <main className="flex-1">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-          </Routes>
-        </main>
+        <Main />
         <Footer />
       </div>
     </BrowserRouter>
