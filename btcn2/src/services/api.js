@@ -59,5 +59,27 @@ export async function getMostPopular(page = 1, limit = 5) {
     }));
 }
 
+/**
+ * Get top-rated movies (IMDB TOP 50)
+ * @param {string} category - Category (default: IMDB_TOP_50)
+ * @param {number} page - Page number (1-indexed)
+ * @param {number} limit - Number of movies to fetch
+ * @returns {Promise<Array>} - Array of movies
+ */
+export async function getTopRated(category = "IMDB_TOP_50", page = 1, limit = 15) {
+    const result = await apiRequest(
+        `/movies/top-rated?category=${encodeURIComponent(category)}&page=${page}&limit=${limit}`
+    );
 
+    return result.data.map((movie) => ({
+        id: movie.id,
+        title: movie.title,
+        release_date: movie.year?.toString() || "",
+        poster_path: movie.image,
+        rating: movie.rate,
+        description: movie.short_description,
+        genres: movie.genres || [],
+        rank: movie.rank,
+    }));
+}
 
