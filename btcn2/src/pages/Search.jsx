@@ -6,7 +6,7 @@ import { searchMovies, searchByPerson } from "../services/api";
  * Search - Trang tìm kiếm phim
  * - Đọc query và searchBy từ URL (?q=...&by=...)
  * - by=title: ?title=avatar
- * - by=person: ?person=tom
+ * - by=person: ?person=tom 
  * - Kết quả luôn là movies (Grid layout với MovieCard)
  * Located in: src/pages/ (theo README structure)
  */
