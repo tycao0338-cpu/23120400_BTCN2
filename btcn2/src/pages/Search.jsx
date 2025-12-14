@@ -1,35 +1,43 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { searchMovies } from "../services/api";
 
 /**
  * Search - Trang tìm kiếm phim
  * - Search input bar at top
  * - Responsive grid layout for results
+ * - API integration with loading/error states
  * Located in: src/pages/ (theo README structure)
  */
 
-// Dummy data for testing UI (10 movies)
-const DUMMY_MOVIES = [
-    { id: "tt0111161", title: "The Shawshank Redemption", rating: 9.3, duration: 142, poster_path: null },
-    { id: "tt0068646", title: "The Godfather", rating: 9.2, duration: 175, poster_path: null },
-    { id: "tt0468569", title: "The Dark Knight", rating: 9.0, duration: 152, poster_path: null },
-    { id: "tt0071562", title: "The Godfather Part II", rating: 9.0, duration: 202, poster_path: null },
-    { id: "tt0050083", title: "12 Angry Men", rating: 9.0, duration: 96, poster_path: null },
-    { id: "tt0108052", title: "Schindler's List", rating: 9.0, duration: 195, poster_path: null },
-    { id: "tt0167260", title: "The Lord of the Rings", rating: 9.0, duration: 201, poster_path: null },
-    { id: "tt0110912", title: "Pulp Fiction", rating: 8.9, duration: 154, poster_path: null },
-    { id: "tt0120737", title: "The Fellowship of the Ring", rating: 8.8, duration: 178, poster_path: null },
-    { id: "tt0109830", title: "Forrest Gump", rating: 8.8, duration: 142, poster_path: null },
-];
-
 export function Search() {
     const [searchQuery, setSearchQuery] = useState("");
-    const [results, setResults] = useState(DUMMY_MOVIES);
+    const [results, setResults] = useState([]);
+    const [pagination, setPagination] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [hasSearched, setHasSearched] = useState(false);
 
-    const handleSearch = (e) => {
+    const handleSearch = async (e) => {
         e.preventDefault();
-        // TODO: Integrate with API
-        console.log("Searching for:", searchQuery);
+
+        if (!searchQuery.trim()) return;
+
+        setIsLoading(true);
+        setError(null);
+        setHasSearched(true);
+
+        try {
+            const response = await searchMovies(searchQuery, 1, 20);
+            setResults(response.data);
+            setPagination(response.pagination);
+        } catch (err) {
+            console.error("Search error:", err);
+            setError(err.message);
+            setResults([]);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -46,36 +54,90 @@ export function Search() {
                     />
                     <button
                         type="submit"
-                        className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-sky-500 hover:bg-sky-600 rounded-full flex items-center justify-center transition-colors"
+                        disabled={isLoading}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-sky-500 hover:bg-sky-600 disabled:bg-gray-400 rounded-full flex items-center justify-center transition-colors"
                     >
-                        <span className="text-white text-xl">🔍</span>
+                        <span className="text-white text-xl">{isLoading ? "⏳" : "🔍"}</span>
                     </button>
                 </div>
             </form>
 
-            {/* Results Count */}
-            <div className="mb-4">
-                <p className="text-gray-600 dark:text-gray-400 text-sm">
-                    Found {results.length} results
-                </p>
-            </div>
+            {/* Error State */}
+            {error && (
+                <div className="text-center py-8">
+                    <p className="text-red-500 dark:text-red-400">Error: {error}</p>
+                </div>
+            )}
 
-            {/* Responsive Grid Layout */}
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                {results.map((movie) => (
-                    <SearchResultCard key={movie.id} movie={movie} />
-                ))}
-            </div>
+            {/* Loading State */}
+            {isLoading && (
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                    {Array.from({ length: 10 }).map((_, i) => (
+                        <div key={i} className="bg-gray-200 dark:bg-slate-700 rounded-lg overflow-hidden animate-pulse">
+                            <div className="aspect-[2/3] bg-gray-300 dark:bg-slate-600" />
+                            <div className="p-3 space-y-2">
+                                <div className="h-4 bg-gray-300 dark:bg-slate-600 rounded" />
+                                <div className="h-3 bg-gray-300 dark:bg-slate-600 rounded w-2/3" />
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            {/* Results */}
+            {!isLoading && !error && hasSearched && (
+                <>
+                    {/* Results Count */}
+                    <div className="mb-4">
+                        <p className="text-gray-600 dark:text-gray-400 text-sm">
+                            Found {pagination?.total_items || results.length} results
+                        </p>
+                    </div>
+
+                    {/* No Results */}
+                    {results.length === 0 ? (
+                        <div className="text-center py-16">
+                            <div className="text-6xl mb-4">🎬</div>
+                            <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                No movies found
+                            </h3>
+                            <p className="text-gray-500 dark:text-gray-400">
+                                Try searching with different keywords
+                            </p>
+                        </div>
+                    ) : (
+                        /* Responsive Grid Layout */
+                        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                            {results.map((movie) => (
+                                <SearchResultCard key={movie.id} movie={movie} />
+                            ))}
+                        </div>
+                    )}
+                </>
+            )}
+
+            {/* Initial State - Before searching */}
+            {!hasSearched && !isLoading && (
+                <div className="text-center py-16">
+                    <div className="text-6xl mb-4">🔍</div>
+                    <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        Search for movies
+                    </h3>
+                    <p className="text-gray-500 dark:text-gray-400">
+                        Enter a movie title to get started
+                    </p>
+                </div>
+            )}
         </main>
     );
 }
 
 /**
  * SearchResultCard - Card hiển thị trong kết quả tìm kiếm
- * Hiển thị: Poster, Title, Rating, Duration
+ * Hiển thị: Poster, Title, Rating, Year
  */
 function SearchResultCard({ movie }) {
-    const { id, title, rating, duration, poster_path } = movie;
+    const { id, title, rating, release_date, poster_path } = movie;
 
     return (
         <Link
@@ -89,6 +151,9 @@ function SearchResultCard({ movie }) {
                         src={poster_path}
                         alt={title}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        onError={(e) => {
+                            e.target.style.display = "none";
+                        }}
                     />
                 ) : (
                     <span className="text-gray-400 dark:text-gray-500 text-4xl">🎬</span>
@@ -102,18 +167,22 @@ function SearchResultCard({ movie }) {
                     {title}
                 </h3>
 
-                {/* Rating & Duration */}
+                {/* Rating & Year */}
                 <div className="flex items-center justify-between text-xs">
                     {/* Rating */}
-                    <div className="flex items-center gap-1 text-yellow-500">
-                        <span>⭐</span>
-                        <span className="font-medium">{rating}</span>
-                    </div>
+                    {rating && (
+                        <div className="flex items-center gap-1 text-yellow-500">
+                            <span>⭐</span>
+                            <span className="font-medium">{rating}</span>
+                        </div>
+                    )}
 
-                    {/* Duration */}
-                    <div className="text-gray-500 dark:text-gray-400">
-                        {duration} min
-                    </div>
+                    {/* Year */}
+                    {release_date && (
+                        <div className="text-gray-500 dark:text-gray-400">
+                            {release_date}
+                        </div>
+                    )}
                 </div>
             </div>
         </Link>

@@ -83,3 +83,41 @@ export async function getTopRated(category = "IMDB_TOP_50", page = 1, limit = 15
     }));
 }
 
+/**
+ * Search movies by title
+ * @param {string} title - Search query
+ * @param {number} page - Page number (1-indexed)
+ * @param {number} limit - Number of movies per page
+ * @returns {Promise<{data: Array, pagination: object}>}
+ */
+export async function searchMovies(title, page = 1, limit = 10) {
+    if (!title || title.trim() === "") {
+        return {
+            data: [],
+            pagination: { total_items: 0, current_page: 1, total_pages: 0, page_size: limit }
+        };
+    }
+
+    const result = await apiRequest(
+        `/movies/search?title=${encodeURIComponent(title)}&page=${page}&limit=${limit}`
+    );
+
+    return {
+        data: result.data.map((movie) => ({
+            id: movie.id,
+            title: movie.title,
+            release_date: movie.year?.toString() || "",
+            poster_path: movie.image,
+            rating: movie.rate,
+            description: movie.short_description,
+            genres: movie.genres || [],
+        })),
+        pagination: result.pagination || {
+            total_items: result.data.length,
+            current_page: page,
+            total_pages: 1,
+            page_size: limit
+        }
+    };
+}
+
