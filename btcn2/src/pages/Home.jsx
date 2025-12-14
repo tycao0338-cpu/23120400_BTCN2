@@ -36,12 +36,12 @@ export function Home() {
             />
 
             {/* Top Rating Section - Placeholder */}
-            <div className="mx-4 mb-4">
-                <h2 className="text-xl font-bold mb-2 dark:text-white">Top Rating</h2>
-                <div className="flex items-center justify-center h-40 border-2 border-dashed border-gray-300 dark:border-slate-600 rounded-lg">
-                    <p className="text-gray-500 dark:text-gray-400"></p>
-                </div>
-            </div>
+            <MovieRow
+                title="Top Rating"
+                movies={[]}
+                isLoading={false}
+                moviesPerPage={3}
+            />
         </main>
     );
 }
