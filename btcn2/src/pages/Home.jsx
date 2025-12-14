@@ -1,6 +1,7 @@
+import { useState, useEffect } from "react";
 import { HeroSlider } from "../components/movie/HeroSlider";
 import { MovieRow } from "../components/movie/MovieRow";
-import { useFetch } from "../hooks/useFetch";
+import { LoadingSpinner } from "../components/common/LoadingSpinner";
 import { getMostPopular, getTopRated } from "../services/api";
 
 /**
@@ -8,44 +9,66 @@ import { getMostPopular, getTopRated } from "../services/api";
  * Located in: src/pages/ (theo README structure)
  * 
  * Logic fetch API được đặt ở đây, UI components được tách riêng.
+ * Sử dụng Promise.all để chờ tất cả API calls hoàn thành.
  */
 export function Home() {
-    // Fetch phim cho Hero Slider (top 5)
-    const { data: heroMovies, isLoading: heroLoading } = useFetch(
-        () => getMostPopular(1, 5),
-        []
-    );
+    const [heroMovies, setHeroMovies] = useState([]);
+    const [popularMovies, setPopularMovies] = useState([]);
+    const [topRatedMovies, setTopRatedMovies] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    // Fetch phim cho Most Popular section (15 phim, 3/trang)
-    const { data: popularMovies, isLoading: popularLoading } = useFetch(
-        () => getMostPopular(1, 15),
-        []
-    );
+    useEffect(() => {
+        const fetchAllData = async () => {
+            setLoading(true);
 
-    // Fetch phim cho Top Rating section (15 phim IMDB TOP 50, 3/trang)
-    const { data: topRatedMovies, isLoading: topRatedLoading } = useFetch(
-        () => getTopRated("IMDB_TOP_50", 1, 15),
-        []
-    );
+            try {
+                // Fetch ALL data in parallel using Promise.all
+                const [hero, popular, topRated] = await Promise.all([
+                    getMostPopular(1, 5),      // Hero Slider - top 5
+                    getMostPopular(1, 15),     // Most Popular - 15 phim
+                    getTopRated("IMDB_TOP_50", 1, 15)  // Top Rating - 15 phim
+                ]);
 
+                setHeroMovies(hero);
+                setPopularMovies(popular);
+                setTopRatedMovies(topRated);
+            } catch (error) {
+                console.error("Error fetching home data:", error);
+            } finally {
+                // Set loading to false ONLY after ALL API calls finished
+                setLoading(false);
+            }
+        };
+
+        fetchAllData();
+    }, []);
+
+    // Show LoadingSpinner while loading
+    if (loading) {
+        return (
+            <main className="flex-1 bg-gray-100 dark:bg-slate-800 transition-colors">
+                <LoadingSpinner message="Loading movies..." />
+            </main>
+        );
+    }
+
+    // Show content after loading
     return (
         <main className="flex-1 bg-gray-100 dark:bg-slate-800 transition-colors">
             {/* Hero Slider - Top 5 phim */}
-            <HeroSlider movies={heroMovies || []} isLoading={heroLoading} />
+            <HeroSlider movies={heroMovies} />
 
             {/* Most Popular - 15 phim với pagination 3/trang */}
             <MovieRow
                 title="Most Popular"
-                movies={popularMovies || []}
-                isLoading={popularLoading}
+                movies={popularMovies}
                 moviesPerPage={3}
             />
 
             {/* Top Rating - 15 phim IMDB TOP 50 với pagination 3/trang */}
             <MovieRow
                 title="Top Rating"
-                movies={topRatedMovies || []}
-                isLoading={topRatedLoading}
+                movies={topRatedMovies}
                 moviesPerPage={3}
             />
         </main>
