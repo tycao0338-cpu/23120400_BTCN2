@@ -252,3 +252,41 @@ export async function getPersonDetails(personId) {
         })),
     };
 }
+
+/**
+ * Get movie reviews with pagination
+ * @param {string} movieId - Movie ID (e.g., "tt0012349")
+ * @param {number} page - Page number (1-indexed)
+ * @param {number} limit - Number of reviews per page
+ * @param {string} sort - Sort order (newest, oldest, highest, lowest)
+ * @returns {Promise<object>} - Reviews with pagination
+ */
+export async function getMovieReviews(movieId, page = 1, limit = 10, sort = "newest") {
+    if (!movieId) {
+        throw new Error("Movie ID is required");
+    }
+
+    const result = await apiRequest(
+        `/movies/${encodeURIComponent(movieId)}/reviews?page=${page}&limit=${limit}&sort=${sort}`
+    );
+
+    return {
+        movie_id: result.movie_id,
+        movie_title: result.movie_title,
+        reviews: (result.data || []).map((r) => ({
+            id: r.id,
+            author: r.username,
+            rating: r.rate,
+            title: r.title,
+            content: r.content,
+            date: r.date,
+            warning_spoilers: r.warning_spoilers,
+        })),
+        pagination: result.pagination || {
+            total_items: 0,
+            current_page: page,
+            total_pages: 1,
+            page_size: limit
+        }
+    };
+}
