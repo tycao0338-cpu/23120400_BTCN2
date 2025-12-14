@@ -318,3 +318,24 @@ export async function registerUser({ username, email, password, phone, dob }) {
 
     return result;
 }
+
+/**
+ * Login user
+ * @param {string} username - Username
+ * @param {string} password - Password
+ * @returns {Promise<object>} - Login result with token
+ */
+export async function loginUser(username, password) {
+    const result = await apiRequest("/users/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            username,
+            password,
+        }),
+    });
+
+    return result;
+}
