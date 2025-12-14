@@ -381,3 +381,20 @@ export async function getUserFavorites() {
     // Return the favorites array or empty array
     return result?.favorites || result || [];
 }
+
+/**
+ * Remove movie from favorites
+ * @param {string} movieId - Movie ID to remove
+ * @returns {Promise<object>} - Result
+ */
+export async function removeFromFavorites(movieId) {
+    if (!movieId) {
+        throw new Error("Movie ID is required");
+    }
+
+    const result = await apiRequest(`/users/favorites/${encodeURIComponent(movieId)}`, {
+        method: "DELETE",
+    });
+
+    return result;
+}
