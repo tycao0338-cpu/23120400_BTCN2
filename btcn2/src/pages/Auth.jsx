@@ -95,27 +95,27 @@ export function Auth() {
         }`;
 
     return (
-        <main className="flex-1 bg-gray-100 dark:bg-slate-800 transition-colors flex items-center justify-center p-4">
+        <main className="flex-1 bg-gradient-to-br from-sky-100 via-indigo-50 to-purple-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 transition-colors flex items-center justify-center p-4">
             <div className="w-full max-w-md">
                 {/* Back to Home */}
                 <Link
                     to="/"
-                    className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors mb-4"
+                    className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-white transition-colors mb-6"
                 >
                     <ArrowLeft size={18} />
                     <span>Back to Home</span>
                 </Link>
 
-                {/* Auth Card */}
-                <div className="bg-white dark:bg-slate-700 rounded-lg shadow-lg overflow-hidden">
-                    {/* Tabs */}
+                {/* Auth Card - Glassmorphism */}
+                <div className="bg-white/80 dark:bg-slate-800/90 backdrop-blur-md rounded-2xl shadow-xl overflow-hidden border border-white/20 dark:border-slate-700">
+                    {/* Tabs - Gradient */}
                     <div className="flex">
                         <button
                             type="button"
                             onClick={() => switchTab("login")}
-                            className={`flex-1 py-3 text-center font-medium transition-colors ${activeTab === "login"
-                                ? "bg-sky-500 text-white"
-                                : "bg-gray-100 dark:bg-slate-600 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-500"
+                            className={`flex-1 py-3.5 text-center font-semibold transition-all ${activeTab === "login"
+                                ? "bg-gradient-to-r from-sky-500 to-indigo-500 text-white"
+                                : "bg-gray-50 dark:bg-slate-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-600"
                                 }`}
                         >
                             Login
@@ -123,9 +123,9 @@ export function Auth() {
                         <button
                             type="button"
                             onClick={() => switchTab("register")}
-                            className={`flex-1 py-3 text-center font-medium transition-colors ${activeTab === "register"
-                                ? "bg-sky-500 text-white"
-                                : "bg-gray-100 dark:bg-slate-600 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-500"
+                            className={`flex-1 py-3.5 text-center font-semibold transition-all ${activeTab === "register"
+                                ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white"
+                                : "bg-gray-50 dark:bg-slate-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-600"
                                 }`}
                         >
                             Register
@@ -212,11 +212,11 @@ export function Auth() {
                             <p className="text-green-500 text-sm text-center">{success}</p>
                         )}
 
-                        {/* Submit Button */}
+                        {/* Submit Button - Gradient */}
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full py-3 bg-sky-500 hover:bg-sky-600 disabled:bg-sky-300 text-white font-medium rounded-lg transition-colors"
+                            className="w-full py-3.5 bg-gradient-to-r from-sky-500 via-indigo-500 to-purple-500 hover:from-sky-600 hover:via-indigo-600 hover:to-purple-600 disabled:from-gray-400 disabled:to-gray-400 text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl disabled:shadow-none"
                         >
                             {isLoading
                                 ? "Loading..."
