@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { registerUser } from "../services/api";
+import { Link, useNavigate } from "react-router-dom";
+import { registerUser, loginUser } from "../services/api";
 
 /**
  * Auth - Trang đăng nhập và đăng ký
@@ -10,6 +10,7 @@ import { registerUser } from "../services/api";
  */
 
 export function Auth() {
+    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState("login"); // "login" or "register"
 
     // Form states
@@ -65,9 +66,20 @@ export function Auth() {
                     switchTab("login");
                 }, 1500);
             } else {
-                // TODO: Login API
-                console.log("Login:", formData);
-                alert("Login API coming soon!");
+                // Call login API
+                const result = await loginUser(formData.username, formData.password);
+                // Lưu token vào localStorage
+                if (result.token) {
+                    localStorage.setItem("authToken", result.token);
+                }
+                if (result.user) {
+                    localStorage.setItem("user", JSON.stringify(result.user));
+                }
+                setSuccess("Login successful! Redirecting...");
+                // Navigate to home after success
+                setTimeout(() => {
+                    navigate("/");
+                }, 1000);
             }
         } catch (err) {
             setError(err.message || "Something went wrong");
