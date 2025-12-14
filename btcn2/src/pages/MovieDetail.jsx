@@ -21,6 +21,7 @@ export function MovieDetail() {
     const [movie, setMovie] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [isFavorite, setIsFavorite] = useState(false);
 
     // Reviews pagination state
     const [reviews, setReviews] = useState([]);
@@ -170,11 +171,23 @@ export function MovieDetail() {
 
                     {/* Movie Info */}
                     <div className="flex-1">
-                        {/* Title & Rating */}
+                        {/* Title, Favorite & Rating */}
                         <div className="flex items-start justify-between mb-3">
-                            <h1 className="text-2xl md:text-3xl font-bold dark:text-white">
-                                {movie.title}
-                            </h1>
+                            <div className="flex items-center gap-3">
+                                <h1 className="text-2xl md:text-3xl font-bold dark:text-white">
+                                    {movie.title}
+                                </h1>
+                                {/* Favorite Button */}
+                                <button
+                                    onClick={() => setIsFavorite(!isFavorite)}
+                                    className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-slate-600 transition-colors"
+                                    title={isFavorite ? "Remove from favorites" : "Add to favorites"}
+                                >
+                                    <span className="text-2xl">
+                                        {isFavorite ? "❤️" : "🤍"}
+                                    </span>
+                                </button>
+                            </div>
                             {movie.rating && (
                                 <div className="flex items-center gap-1 text-yellow-500 text-lg">
                                     <span>⭐</span>
