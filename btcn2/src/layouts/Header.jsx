@@ -82,23 +82,23 @@ export function Header() {
 
     return (
         <header className="w-full">
-            {/* Top Header Bar */}
-            <div className="flex items-center h-12">
-                {/* MSSV Logo - Pink background */}
-                <div className="bg-sky-400 dark:bg-slate-700 px-4 h-full flex items-center">
-                    <span className="text-pink-800 dark:text-pink-300 font-medium text-sm">&lt;23120400&gt;</span>
+            {/* Top Header Bar - Gradient Premium */}
+            <div className="flex items-center h-14 bg-gradient-to-r from-sky-600 via-indigo-600 to-purple-600 dark:from-slate-800 dark:via-slate-700 dark:to-slate-800">
+                {/* MSSV Logo */}
+                <div className="px-4 h-full flex items-center border-r border-white/20">
+                    <span className="text-white/90 font-mono text-sm font-medium tracking-wide">&lt;23120400&gt;</span>
                 </div>
 
-                {/* Title - Blue background, clickable to Home */}
+                {/* Title - clickable to Home */}
                 <Link
                     to="/"
-                    className="flex-1 bg-sky-400 dark:bg-slate-700 h-full flex items-center justify-center cursor-pointer hover:bg-sky-500 dark:hover:bg-slate-600 transition-colors"
+                    className="flex-1 h-full flex items-center justify-center cursor-pointer hover:bg-white/10 transition-colors"
                 >
-                    <h1 className="text-white font-semibold text-lg">Movies info</h1>
+                    <h1 className="text-white font-bold text-xl tracking-wide drop-shadow-sm">🎬 Movies Info</h1>
                 </Link>
 
                 {/* Theme Toggle & User Section */}
-                <div className="bg-sky-400 dark:bg-slate-700 px-4 h-full flex items-center gap-3">
+                <div className="px-4 h-full flex items-center gap-3 border-l border-white/20">
                     {/* Theme Toggle */}
                     <button
                         onClick={toggleTheme}
@@ -108,7 +108,9 @@ export function Header() {
                             className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${isDark ? "left-[22px]" : "left-0.5"}`}
                         ></span>
                     </button>
-                    {isDark ? <Moon size={20} /> : <Sun size={20} />}
+                    <span className="text-white">
+                        {isDark ? <Moon size={18} /> : <Sun size={18} />}
+                    </span>
 
                     {/* User Section */}
                     {user ? (

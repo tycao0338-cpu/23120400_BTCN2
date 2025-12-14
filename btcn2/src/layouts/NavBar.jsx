@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Home, Search } from "lucide-react";
 
 /**
- * NavBar - Navigation bar component
+ * NavBar - Navigation bar component with glassmorphism effect
  * - Dropdown: By Title / By Person
  * - Search bar navigates to /search?q=...&by=...
  * Located in: src/layouts/ (theo README structure)
@@ -22,10 +22,13 @@ export function NavBar() {
     };
 
     return (
-        <nav className="bg-blue-100 dark:bg-slate-700 border-b border-gray-300 dark:border-slate-600 px-4 py-2 flex items-center justify-between transition-colors">
+        <nav className="bg-white/80 dark:bg-slate-800/90 backdrop-blur-md border-b border-gray-200 dark:border-slate-700 px-4 py-2.5 flex items-center justify-between transition-colors shadow-sm">
             {/* Home Icon */}
-            <Link to="/" className="text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white">
-                <Home size={22} />
+            <Link
+                to="/"
+                className="p-2 rounded-lg bg-gradient-to-r from-sky-500 to-indigo-500 text-white hover:from-sky-600 hover:to-indigo-600 transition-all shadow-sm hover:shadow-md"
+            >
+                <Home size={20} />
             </Link>
 
             {/* Search Bar with Dropdown */}
@@ -34,7 +37,7 @@ export function NavBar() {
                 <select
                     value={searchBy}
                     onChange={(e) => setSearchBy(e.target.value)}
-                    className="px-2 py-1.5 bg-white dark:bg-slate-600 border border-gray-400 dark:border-slate-500 rounded text-sm focus:outline-none focus:border-sky-500 dark:text-white cursor-pointer"
+                    className="px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:text-white cursor-pointer transition-all"
                 >
                     <option value="title">By Title</option>
                     <option value="person">By Person</option>
@@ -46,15 +49,15 @@ export function NavBar() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder={searchBy === "title" ? "Search movie title..." : "Search actor/director..."}
-                    className="px-3 py-1.5 bg-white dark:bg-slate-600 border border-gray-400 dark:border-slate-500 rounded text-sm w-48 focus:outline-none focus:border-sky-500 dark:text-white dark:placeholder-gray-400"
+                    className="px-4 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg text-sm w-56 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:text-white dark:placeholder-gray-400 transition-all"
                 />
 
-                {/* Search Button */}
+                {/* Search Button - Gradient */}
                 <button
                     type="submit"
-                    className="px-4 py-1.5 bg-gray-200 dark:bg-slate-500 border border-gray-400 dark:border-slate-400 rounded text-sm hover:bg-gray-300 dark:hover:bg-slate-400 dark:text-white transition-colors"
+                    className="p-2 bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-600 hover:to-indigo-600 text-white rounded-lg transition-all shadow-sm hover:shadow-md"
                 >
-                    <Search size={19} />
+                    <Search size={18} />
                 </button>
             </form>
         </nav>
