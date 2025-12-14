@@ -176,9 +176,12 @@ export function MovieDetail() {
                         {/* Overview */}
                         <div>
                             <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-2">Overview</h3>
-                            <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-                                {movie.overview || movie.short_description || "No overview available."}
-                            </p>
+                            <div
+                                className="text-gray-600 dark:text-gray-400 leading-relaxed prose prose-sm dark:prose-invert max-w-none"
+                                dangerouslySetInnerHTML={{
+                                    __html: movie.overview || movie.short_description || "No overview available."
+                                }}
+                            />
                         </div>
                     </div>
                 </div>
