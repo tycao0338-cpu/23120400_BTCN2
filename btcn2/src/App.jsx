@@ -4,6 +4,7 @@ import { Home } from "./pages/Home";
 import { Search } from "./pages/Search";
 import { MovieDetail } from "./pages/MovieDetail";
 import { PersonDetail } from "./pages/PersonDetail";
+import { Auth } from "./pages/Auth";
 import "./App.css";
 
 /**
@@ -21,6 +22,7 @@ function App() {
             <Route path="search" element={<Search />} />
             <Route path="movie/:id" element={<MovieDetail />} />
             <Route path="person/:id" element={<PersonDetail />} />
+            <Route path="auth" element={<Auth />} />
           </Route>
         </Routes>
       </div>
