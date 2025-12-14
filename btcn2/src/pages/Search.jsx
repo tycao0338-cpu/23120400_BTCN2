@@ -4,21 +4,23 @@ import { searchMovies } from "../services/api";
 
 /**
  * Search - Trang tìm kiếm phim
- * - Đọc query từ URL (?q=...)
- * - Tự động search khi có query
+ * - Đọc query và searchBy từ URL (?q=...&by=...)
+ * - Hỗ trợ: by=title (default) và by=person
+ * - Kết quả luôn là movies (Grid layout)
  * Located in: src/pages/ (theo README structure)
  */
 
 export function Search() {
     const [searchParams] = useSearchParams();
     const query = searchParams.get("q") || "";
+    const searchBy = searchParams.get("by") || "title"; // "title" or "person"
 
     const [results, setResults] = useState([]);
     const [pagination, setPagination] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    // Tự động search khi query thay đổi
+    // Tự động search khi query hoặc searchBy thay đổi
     useEffect(() => {
         if (!query.trim()) {
             setResults([]);
@@ -30,9 +32,17 @@ export function Search() {
             setError(null);
 
             try {
-                const response = await searchMovies(query, 1, 20);
-                setResults(response.data);
-                setPagination(response.pagination);
+                if (searchBy === "title") {
+                    // Search by movie title
+                    const response = await searchMovies(query, 1, 20);
+                    setResults(response.data);
+                    setPagination(response.pagination);
+                } else {
+                    // TODO: Search by person (actor/director) - API sẽ tích hợp trong commit 2
+                    // Placeholder: hiển thị message chờ API
+                    setResults([]);
+                    setPagination(null);
+                }
             } catch (err) {
                 console.error("Search error:", err);
                 setError(err.message);
@@ -43,12 +53,10 @@ export function Search() {
         };
 
         doSearch();
-    }, [query]);
+    }, [query, searchBy]);
 
     return (
         <main className="flex-1 bg-gray-100 dark:bg-slate-800 transition-colors p-4">
-            {/* Search Query Header */}
-
             {/* Error State */}
             {error && (
                 <div className="text-center py-8">
@@ -71,17 +79,30 @@ export function Search() {
                 </div>
             )}
 
-            {/* Results Grid */}
+            {/* Results Grid - Movies */}
             {!isLoading && !error && results.length > 0 && (
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
                     {results.map((movie) => (
-                        <SearchResultCard key={movie.id} movie={movie} />
+                        <MovieCard key={movie.id} movie={movie} />
                     ))}
                 </div>
             )}
 
-            {/* No Results */}
-            {!isLoading && !error && query && results.length === 0 && (
+            {/* No Results - Person search (API chưa tích hợp) */}
+            {!isLoading && !error && query && results.length === 0 && searchBy === "person" && (
+                <div className="text-center py-16">
+                    <div className="text-6xl mb-4">🎭</div>
+                    <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        Search by Person
+                    </h3>
+                    <p className="text-gray-500 dark:text-gray-400">
+                        API will be integrated in the next commit
+                    </p>
+                </div>
+            )}
+
+            {/* No Results - Title search */}
+            {!isLoading && !error && query && results.length === 0 && searchBy === "title" && (
                 <div className="text-center py-16">
                     <div className="text-6xl mb-4">🎬</div>
                     <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
@@ -110,9 +131,10 @@ export function Search() {
 }
 
 /**
- * SearchResultCard - Card hiển thị trong kết quả tìm kiếm
+ * MovieCard - Card hiển thị kết quả tìm kiếm
+ * Output luôn là movies nên dùng chung MovieCard
  */
-function SearchResultCard({ movie }) {
+function MovieCard({ movie }) {
     const { id, title, rating, release_date, poster_path } = movie;
 
     return (

@@ -3,17 +3,20 @@ import { Link, useNavigate } from "react-router-dom";
 
 /**
  * NavBar - Navigation bar component
- * - Search bar navigates to /search?q=...
+ * - Dropdown: By Title / By Person
+ * - Search bar navigates to /search?q=...&by=...
  * Located in: src/layouts/ (theo README structure)
  */
+
 export function NavBar() {
     const [searchQuery, setSearchQuery] = useState("");
+    const [searchBy, setSearchBy] = useState("title"); // "title" or "person"
     const navigate = useNavigate();
 
     const handleSearch = (e) => {
         e.preventDefault();
         if (searchQuery.trim()) {
-            navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+            navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}&by=${searchBy}`);
         }
     };
 
@@ -24,20 +27,33 @@ export function NavBar() {
                 🏠
             </Link>
 
-            {/* Search Bar */}
+            {/* Search Bar with Dropdown */}
             <form onSubmit={handleSearch} className="flex items-center gap-2">
+                {/* Search By Dropdown */}
+                <select
+                    value={searchBy}
+                    onChange={(e) => setSearchBy(e.target.value)}
+                    className="px-2 py-1.5 bg-white dark:bg-slate-600 border border-gray-400 dark:border-slate-500 rounded text-sm focus:outline-none focus:border-sky-500 dark:text-white cursor-pointer"
+                >
+                    <option value="title">By Title</option>
+                    <option value="person">By Person</option>
+                </select>
+
+                {/* Search Input */}
                 <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search"
+                    placeholder={searchBy === "title" ? "Search movie title..." : "Search actor/director..."}
                     className="px-3 py-1.5 bg-white dark:bg-slate-600 border border-gray-400 dark:border-slate-500 rounded text-sm w-48 focus:outline-none focus:border-sky-500 dark:text-white dark:placeholder-gray-400"
                 />
+
+                {/* Search Button */}
                 <button
                     type="submit"
                     className="px-4 py-1.5 bg-gray-200 dark:bg-slate-500 border border-gray-400 dark:border-slate-400 rounded text-sm hover:bg-gray-300 dark:hover:bg-slate-400 dark:text-white transition-colors"
                 >
-                    Search
+                    🔍
                 </button>
             </form>
         </nav>
