@@ -29,14 +29,9 @@ export function MovieRow({ title, movies = [], isLoading = false, moviesPerPage 
 
     return (
         <div className="mx-4 mb-4">
-            {/* Header với title và page indicator */}
+            {/* Header với title */}
             <div className="flex items-center justify-between mb-2">
                 <h2 className="text-xl font-bold dark:text-white">{title}</h2>
-                {movies.length > 0 && (
-                    <span className="text-sm text-gray-500 dark:text-gray-400">
-                        Trang {currentPage + 1} / {totalPages}
-                    </span>
-                )}
             </div>
 
             {/* Movie cards với navigation arrows */}
@@ -45,7 +40,7 @@ export function MovieRow({ title, movies = [], isLoading = false, moviesPerPage 
                 <button
                     onClick={goToPrevious}
                     disabled={movies.length === 0}
-                    className="absolute -left-2 z-10 w-8 h-8 bg-white dark:bg-slate-600 rounded-full shadow-md flex items-center justify-center hover:bg-gray-100 dark:hover:bg-slate-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                    className="absolute left-50 z-10 w-8 h-8 bg-white dark:bg-slate-600 rounded-full shadow-md flex items-center justify-center hover:bg-gray-100 dark:hover:bg-slate-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                     <span className="text-gray-600 dark:text-white text-lg">‹</span>
                 </button>
@@ -77,7 +72,7 @@ export function MovieRow({ title, movies = [], isLoading = false, moviesPerPage 
                 <button
                     onClick={goToNext}
                     disabled={movies.length === 0}
-                    className="absolute -right-2 z-10 w-8 h-8 bg-white dark:bg-slate-600 rounded-full shadow-md flex items-center justify-center hover:bg-gray-100 dark:hover:bg-slate-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                    className="absolute right-50 z-10 w-8 h-8 bg-white dark:bg-slate-600 rounded-full shadow-md flex items-center justify-center hover:bg-gray-100 dark:hover:bg-slate-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                     <span className="text-gray-600 dark:text-white text-lg">›</span>
                 </button>
@@ -91,8 +86,8 @@ export function MovieRow({ title, movies = [], isLoading = false, moviesPerPage 
                             key={index}
                             onClick={() => setCurrentPage(index)}
                             className={`w-2 h-2 rounded-full transition-all ${index === currentPage
-                                    ? "bg-sky-500 w-4"
-                                    : "bg-gray-300 dark:bg-slate-600 hover:bg-gray-400"
+                                ? "bg-sky-500 w-4"
+                                : "bg-gray-300 dark:bg-slate-600 hover:bg-gray-400"
                                 }`}
                             aria-label={`Go to page ${index + 1}`}
                         />

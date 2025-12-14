@@ -110,7 +110,7 @@ export function Favorites() {
                     <button
                         onClick={() => goToPage(currentPage - 1)}
                         disabled={currentPage <= 1}
-                        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white dark:bg-slate-600 rounded-full shadow-md flex items-center justify-center hover:bg-gray-100 dark:hover:bg-slate-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                        className="absolute left-50 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white dark:bg-slate-600 rounded-full shadow-md flex items-center justify-center hover:bg-gray-100 dark:hover:bg-slate-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                     >
                         <span className="text-gray-600 dark:text-white text-xl">‹</span>
                     </button>
@@ -131,7 +131,7 @@ export function Favorites() {
                     <button
                         onClick={() => goToPage(currentPage + 1)}
                         disabled={currentPage >= totalPages}
-                        className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white dark:bg-slate-600 rounded-full shadow-md flex items-center justify-center hover:bg-gray-100 dark:hover:bg-slate-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                        className="absolute right-50 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white dark:bg-slate-600 rounded-full shadow-md flex items-center justify-center hover:bg-gray-100 dark:hover:bg-slate-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                     >
                         <span className="text-gray-600 dark:text-white text-xl">›</span>
                     </button>
@@ -144,8 +144,8 @@ export function Favorites() {
                                     key={index}
                                     onClick={() => goToPage(index + 1)}
                                     className={`w-2 h-2 rounded-full transition-all ${index + 1 === currentPage
-                                            ? "bg-sky-500 w-4"
-                                            : "bg-gray-300 dark:bg-slate-600 hover:bg-gray-400"
+                                        ? "bg-sky-500 w-4"
+                                        : "bg-gray-300 dark:bg-slate-600 hover:bg-gray-400"
                                         }`}
                                     aria-label={`Go to page ${index + 1}`}
                                 />
