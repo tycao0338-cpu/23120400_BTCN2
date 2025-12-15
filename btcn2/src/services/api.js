@@ -411,6 +411,30 @@ export async function getUserProfile() {
 }
 
 /**
+ * Update user profile
+ * @param {object} profileData - Profile data to update
+ * @param {string} profileData.email - Email address
+ * @param {string} profileData.phone - Phone number (optional)
+ * @param {string} profileData.dob - Date of birth (YYYY-MM-DD format, optional)
+ * @returns {Promise<object>} - Updated profile data
+ */
+export async function updateUserProfile({ email, phone, dob }) {
+  const result = await apiRequest("/users/profile", {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email,
+      phone: phone || undefined,
+      dob: dob || undefined,
+    }),
+  });
+
+  return result;
+}
+
+/**
  * Add movie to favorites
  * @param {string} movieId - Movie ID (e.g., "tt0012349")
  * @returns {Promise<object>} - Result
