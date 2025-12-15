@@ -15,8 +15,16 @@ import {
  * @param {string} title - Tiêu đề section
  * @param {Array} movies - Danh sách phim
  * @param {boolean} isLoading - Trạng thái loading
+ * @param {Function} onRemove - Callback khi remove movie (optional, cho Favorites)
+ * @param {string|number} removingId - ID của movie đang được remove
  */
-export function MovieRow({ title, movies = [], isLoading = false }) {
+export function MovieRow({
+  title,
+  movies = [],
+  isLoading = false,
+  onRemove,
+  removingId,
+}) {
   return (
     <div className="mx-4 mb-6">
       {/* Header với title */}
@@ -50,7 +58,11 @@ export function MovieRow({ title, movies = [], isLoading = false }) {
                 className="basis-1/3 overflow-visible"
               >
                 <div className="py-4 px-8">
-                  <MovieCard movie={movie} />
+                  <MovieCard
+                    movie={movie}
+                    onRemove={onRemove}
+                    isRemoving={removingId === movie.id}
+                  />
                 </div>
               </CarouselItem>
             ))
