@@ -57,6 +57,8 @@ export function Auth() {
           username: data.username,
           email: data.email,
           password: data.password,
+          phone: data.phone || undefined,
+          dob: data.dob || undefined,
         });
         setSuccess("Registration successful! Please login.");
         // Switch to login tab after success
@@ -204,6 +206,46 @@ export function Auth() {
                 {errors.confirmPassword && (
                   <p className="text-red-500 text-sm mt-1">
                     {errors.confirmPassword.message}
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Phone (Register only - Optional) */}
+            {activeTab === "register" && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Phone Number <span className="text-gray-400">(optional)</span>
+                </label>
+                <input
+                  type="tel"
+                  {...register("phone")}
+                  className={inputClass(errors.phone)}
+                  placeholder="Enter phone number"
+                />
+                {errors.phone && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.phone.message}
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Date of Birth (Register only - Optional) */}
+            {activeTab === "register" && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Date of Birth{" "}
+                  <span className="text-gray-400">(optional)</span>
+                </label>
+                <input
+                  type="date"
+                  {...register("dob")}
+                  className={inputClass(errors.dob)}
+                />
+                {errors.dob && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.dob.message}
                   </p>
                 )}
               </div>
