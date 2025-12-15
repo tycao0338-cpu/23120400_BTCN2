@@ -163,12 +163,6 @@ export function Header() {
               >
                 Login
               </Link>
-              <Link
-                to="/auth"
-                className="px-3 py-1 text-sm bg-white text-sky-600 rounded hover:bg-sky-50 transition-colors"
-              >
-                Register
-              </Link>
             </div>
           )}
         </div>
