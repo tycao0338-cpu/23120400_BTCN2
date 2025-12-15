@@ -126,6 +126,13 @@ export function Header() {
                   </div>
 
                   {/* Menu Items */}
+                  <Link
+                    to="/profile"
+                    onClick={() => setDropdownOpen(false)}
+                    className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-600"
+                  >
+                    <User size={16} /> My Profile
+                  </Link>
 
                   <Link
                     to="/favorites"
