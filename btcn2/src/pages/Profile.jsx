@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { getUserProfile } from "../services/api";
 import { BackButton } from "../components/common/BackButton";
-import { User, Mail, Phone, Calendar, Loader } from "lucide-react";
+import { User, Mail, Phone, Calendar, Loader, Edit } from "lucide-react";
 
 /**
  * Profile - User profile page
@@ -104,6 +105,15 @@ export function Profile() {
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 capitalize">
               {profile?.role || "User"}
             </p>
+
+            {/* Edit Button */}
+            <Link
+              to="/profile/edit"
+              className="inline-flex items-center gap-2 px-4 py-2 mb-6 bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-600 hover:to-indigo-600 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all"
+            >
+              <Edit size={18} />
+              Edit Profile
+            </Link>
 
             {/* Info Grid */}
             <div className="space-y-4">

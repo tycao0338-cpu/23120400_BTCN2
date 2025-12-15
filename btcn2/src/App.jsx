@@ -8,6 +8,7 @@ import { PersonDetail } from "./pages/PersonDetail";
 import { Auth } from "./pages/Auth";
 import { Favorites } from "./pages/Favorites";
 import { Profile } from "./pages/Profile";
+import { UpdateProfile } from "./pages/UpdateProfile";
 import { PrivateRoute, GuestRoute } from "./components/auth/PrivateRoute";
 import "./App.css";
 
@@ -43,6 +44,7 @@ function App() {
               {/* Private Routes - cần đăng nhập */}
               <Route element={<PrivateRoute />}>
                 <Route path="profile" element={<Profile />} />
+                <Route path="profile/edit" element={<UpdateProfile />} />
                 <Route path="favorites" element={<Favorites />} />
               </Route>
             </Route>
