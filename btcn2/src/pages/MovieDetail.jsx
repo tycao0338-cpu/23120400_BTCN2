@@ -4,6 +4,7 @@ import {
   getMovieDetails,
   getMovieReviews,
   addToFavorites,
+  removeFromFavorites,
 } from "../services/api";
 import { ReviewItem } from "../components/review/ReviewItem";
 import { Pagination } from "../components/common/Pagination";
@@ -53,7 +54,13 @@ export function MovieDetail() {
 
     setFavoriteLoading(true);
     try {
-      await addToFavorites(id);
+      if (isFavorite) {
+        // Remove from favorites
+        await removeFromFavorites(id);
+      } else {
+        // Add to favorites
+        await addToFavorites(id);
+      }
       setIsFavorite(!isFavorite);
     } catch (err) {
       console.error("Error toggling favorite:", err);
