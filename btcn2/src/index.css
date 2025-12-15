@@ -3,20 +3,19 @@
 /* Configure dark mode to use class selector */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Custom keyframes for page transitions */
-@keyframes fadeInUp {
-    0% {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
+/* Apply dark mode to html and body - toàn bộ trang */
+html {
+    @apply bg-white transition-colors duration-300;
 }
 
-/* Custom animation utilities */
-@utility animate-fade-in {
-    animation: fadeInUp 0.5s ease-out forwards;
+html.dark {
+    @apply bg-slate-900;
+}
+
+body {
+    @apply bg-white transition-colors duration-300;
+}
+
+.dark body {
+    @apply bg-slate-900;
 }
