@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { getPersonDetails } from "../services/api";
 import { BackButton } from "../components/common/BackButton";
 import { Pagination } from "../components/common/Pagination";
@@ -14,7 +14,6 @@ import { Pagination } from "../components/common/Pagination";
  */
 
 export function PersonDetail() {
-  const navigate = useNavigate();
   const { id } = useParams();
 
   // State
@@ -182,8 +181,6 @@ export function PersonDetail() {
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {(() => {
                 // Calculate pagination
-                const totalItems = person.known_for.length;
-                const totalPages = Math.ceil(totalItems / itemsPerPage);
                 const startIndex = (currentPage - 1) * itemsPerPage;
                 const endIndex = startIndex + itemsPerPage;
                 const currentMovies = person.known_for.slice(

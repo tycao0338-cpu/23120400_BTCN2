@@ -39,7 +39,7 @@ async function apiRequest(endpoint, options = {}) {
       if (errorData.message) {
         errorMessage = errorData.message;
       }
-    } catch (e) {
+    } catch {
       // Ignore JSON parse error
     }
     throw new Error(errorMessage);
