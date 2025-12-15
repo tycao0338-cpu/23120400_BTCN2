@@ -36,6 +36,9 @@ export function MovieDetail() {
   const [reviewsPagination, setReviewsPagination] = useState(null);
   const [reviewsLoading, setReviewsLoading] = useState(false);
 
+  // Overview expand state
+  const [isOverviewExpanded, setIsOverviewExpanded] = useState(false);
+
   // Handle toggle favorite
   const handleToggleFavorite = async () => {
     // Check if user is logged in
@@ -266,15 +269,37 @@ export function MovieDetail() {
               <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-2">
                 Overview
               </h3>
-              <div
-                className="text-gray-600 dark:text-gray-400 leading-relaxed prose prose-sm dark:prose-invert max-w-none"
-                dangerouslySetInnerHTML={{
-                  __html:
-                    movie.overview ||
-                    movie.short_description ||
-                    "No overview available.",
-                }}
-              />
+              {(() => {
+                const overviewText =
+                  movie.overview ||
+                  movie.short_description ||
+                  "No overview available.";
+                const maxLength = 300;
+                const isLong = overviewText.length > maxLength;
+                const displayText =
+                  isLong && !isOverviewExpanded
+                    ? overviewText.substring(0, maxLength) + "..."
+                    : overviewText;
+
+                return (
+                  <>
+                    <div
+                      className="text-gray-600 dark:text-gray-400 leading-relaxed prose prose-sm dark:prose-invert max-w-none"
+                      dangerouslySetInnerHTML={{ __html: displayText }}
+                    />
+                    {isLong && (
+                      <button
+                        onClick={() =>
+                          setIsOverviewExpanded(!isOverviewExpanded)
+                        }
+                        className="mt-2 text-sky-500 hover:text-sky-600 dark:text-sky-400 dark:hover:text-sky-300 text-sm font-medium transition-colors"
+                      >
+                        {isOverviewExpanded ? "Show less" : "Show more"}
+                      </button>
+                    )}
+                  </>
+                );
+              })()}
             </div>
           </div>
         </div>
