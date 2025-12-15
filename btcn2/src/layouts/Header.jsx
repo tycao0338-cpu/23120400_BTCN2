@@ -81,9 +81,9 @@ export function Header() {
   };
 
   return (
-    <header className="w-full">
-      {/* Top Header Bar - Gradient Premium - STICKY */}
-      <div className="sticky top-0 z-50 flex items-center h-14 bg-gradient-to-r from-sky-600 via-indigo-600 to-purple-600 dark:from-slate-800 dark:via-slate-700 dark:to-slate-800">
+    <header className="sticky top-0 z-50 w-full">
+      {/* Top Header Bar - Gradient Premium - FIXED */}
+      <div className="flex items-center h-14 bg-gradient-to-r from-sky-600 via-indigo-600 to-purple-600 dark:from-slate-800 dark:via-slate-700 dark:to-slate-800">
         {/* MSSV Logo */}
         <div className="px-4 h-full flex items-center border-r border-white/20">
           <span className="text-white/90 font-mono text-sm font-medium tracking-wide">
@@ -185,11 +185,6 @@ export function Header() {
             </div>
           )}
         </div>
-      </div>
-
-      {/* Navigation Bar */}
-      <div className="mt-[5px]">
-        <NavBar />
       </div>
 
       {/* Toast Notification */}
