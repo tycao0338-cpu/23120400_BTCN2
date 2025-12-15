@@ -122,7 +122,10 @@ export function Profile() {
 
               {/* Phone */}
               <div className="flex items-start gap-3 p-3 bg-gray-50 dark:bg-slate-600 rounded-lg">
-                <Phone size={20} className="text-indigo-500 mt-0.5 flex-shrink-0" />
+                <Phone
+                  size={20}
+                  className="text-indigo-500 mt-0.5 flex-shrink-0"
+                />
                 <div className="flex-1">
                   <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
                     Phone Number
@@ -135,7 +138,10 @@ export function Profile() {
 
               {/* Date of Birth */}
               <div className="flex items-start gap-3 p-3 bg-gray-50 dark:bg-slate-600 rounded-lg">
-                <Calendar size={20} className="text-purple-500 mt-0.5 flex-shrink-0" />
+                <Calendar
+                  size={20}
+                  className="text-purple-500 mt-0.5 flex-shrink-0"
+                />
                 <div className="flex-1">
                   <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
                     Date of Birth
