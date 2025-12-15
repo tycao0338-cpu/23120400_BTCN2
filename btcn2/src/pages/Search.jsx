@@ -1,12 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { searchMovies, searchByPerson } from "../services/api";
-import {
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
-} from "lucide-react";
+import { Pagination } from "../components/common/Pagination";
 
 /**
  * Search - Trang tìm kiếm phim với phân trang
@@ -111,160 +106,15 @@ export function Search() {
             ))}
           </div>
 
-          {/* Pagination Controls - Professional Style */}
-          {pagination && pagination.total_pages > 1 && (
-            <div className="flex flex-col items-center gap-3 mt-8">
-              {/* Page Info */}
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Showing{" "}
-                <span className="font-semibold text-gray-700 dark:text-white">
-                  {(currentPage - 1) * 10 + 1}
-                </span>{" "}
-                to{" "}
-                <span className="font-semibold text-gray-700 dark:text-white">
-                  {Math.min(currentPage * 10, pagination.total_items)}
-                </span>{" "}
-                of{" "}
-                <span className="font-semibold text-gray-700 dark:text-white">
-                  {pagination.total_items}
-                </span>{" "}
-                results
-              </p>
-
-              {/* Pagination Buttons */}
-              <nav className="flex items-center gap-1">
-                {/* First Page */}
-                <button
-                  onClick={() => goToPage(1)}
-                  disabled={currentPage <= 1}
-                  className="p-2 rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                  title="First page"
-                >
-                  <ChevronsLeft
-                    size={18}
-                    className="text-gray-600 dark:text-gray-300"
-                  />
-                </button>
-
-                {/* Previous */}
-                <button
-                  onClick={() => goToPage(currentPage - 1)}
-                  disabled={currentPage <= 1}
-                  className="p-2 rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                  title="Previous page"
-                >
-                  <ChevronLeft
-                    size={18}
-                    className="text-gray-600 dark:text-gray-300"
-                  />
-                </button>
-
-                {/* Page Numbers */}
-                <div className="flex items-center gap-1 mx-2">
-                  {(() => {
-                    const pages = [];
-                    const total = pagination.total_pages;
-                    const current = currentPage;
-
-                    // Always show first page
-                    if (current > 3) {
-                      pages.push(
-                        <button
-                          key={1}
-                          onClick={() => goToPage(1)}
-                          className="w-10 h-10 rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600 text-gray-700 dark:text-gray-300 font-medium transition-all"
-                        >
-                          1
-                        </button>
-                      );
-                      if (current > 4) {
-                        pages.push(
-                          <span
-                            key="start-ellipsis"
-                            className="px-2 text-gray-400"
-                          >
-                            ...
-                          </span>
-                        );
-                      }
-                    }
-
-                    // Pages around current
-                    for (
-                      let i = Math.max(1, current - 2);
-                      i <= Math.min(total, current + 2);
-                      i++
-                    ) {
-                      pages.push(
-                        <button
-                          key={i}
-                          onClick={() => goToPage(i)}
-                          className={`w-10 h-10 rounded-lg font-medium transition-all ${
-                            i === current
-                              ? "bg-gradient-to-r from-sky-500 to-indigo-500 text-white shadow-lg"
-                              : "border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600 text-gray-700 dark:text-gray-300"
-                          }`}
-                        >
-                          {i}
-                        </button>
-                      );
-                    }
-
-                    // Always show last page
-                    if (current < total - 2) {
-                      if (current < total - 3) {
-                        pages.push(
-                          <span
-                            key="end-ellipsis"
-                            className="px-2 text-gray-400"
-                          >
-                            ...
-                          </span>
-                        );
-                      }
-                      pages.push(
-                        <button
-                          key={total}
-                          onClick={() => goToPage(total)}
-                          className="w-10 h-10 rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600 text-gray-700 dark:text-gray-300 font-medium transition-all"
-                        >
-                          {total}
-                        </button>
-                      );
-                    }
-
-                    return pages;
-                  })()}
-                </div>
-
-                {/* Next */}
-                <button
-                  onClick={() => goToPage(currentPage + 1)}
-                  disabled={currentPage >= pagination.total_pages}
-                  className="p-2 rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                  title="Next page"
-                >
-                  <ChevronRight
-                    size={18}
-                    className="text-gray-600 dark:text-gray-300"
-                  />
-                </button>
-
-                {/* Last Page */}
-                <button
-                  onClick={() => goToPage(pagination.total_pages)}
-                  disabled={currentPage >= pagination.total_pages}
-                  className="p-2 rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                  title="Last page"
-                >
-                  <ChevronsRight
-                    size={18}
-                    className="text-gray-600 dark:text-gray-300"
-                  />
-                </button>
-              </nav>
-            </div>
-          )}
+          {/* Pagination Controls */}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={pagination?.total_pages || 1}
+            totalItems={pagination?.total_items || 0}
+            itemsPerPage={10}
+            onPageChange={goToPage}
+            itemLabel="results"
+          />
         </>
       )}
 
