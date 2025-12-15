@@ -79,7 +79,7 @@ export function Header() {
 
         {/* Title - clickable to Home */}
         <Link
-          to="/"
+          to="/home"
           className="flex-1 h-full flex items-center justify-center cursor-pointer hover:bg-white/10 transition-colors"
         >
           <h1 className="text-white font-bold text-xl tracking-wide drop-shadow-sm">

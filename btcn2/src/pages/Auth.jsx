@@ -102,7 +102,7 @@ export function Auth() {
     <main className="flex-1 bg-gradient-to-br from-sky-100 via-indigo-50 to-purple-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 transition-colors flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Back to Home */}
-        <BackButton to="/" label="Back to Home" className="mb-6" />
+        <BackButton to="/home" label="Back to Home" className="mb-6" />
         {/* Auth Card - Glassmorphism */}
         <div className="bg-white/80 dark:bg-slate-800/90 backdrop-blur-md rounded-2xl shadow-xl overflow-hidden border border-white/20 dark:border-slate-700">
           {/* Tabs - Gradient */}

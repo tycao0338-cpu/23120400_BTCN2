@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { MainLayout } from "./layouts/MainLayout";
 import { Home } from "./pages/Home";
@@ -25,8 +25,11 @@ function App() {
           <Routes>
             {/* Public Routes - MainLayout với Outlet */}
             <Route path="/" element={<MainLayout />}>
+              {/* Redirect / to /home */}
+              <Route index element={<Navigate to="/home" replace />} />
+
               {/* Public - Accessible to everyone */}
-              <Route index element={<Home />} />
+              <Route path="home" element={<Home />} />
               <Route path="search" element={<Search />} />
               <Route path="movie/:id" element={<MovieDetail />} />
               <Route path="person/:id" element={<PersonDetail />} />

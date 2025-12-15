@@ -111,7 +111,7 @@ export function Favorites() {
             Start exploring and add movies to your favorites!
           </p>
           <Link
-            to="/"
+            to="/home"
             className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-600 hover:to-indigo-600 text-white font-medium rounded-lg transition-all shadow-md hover:shadow-lg"
           >
             <Film size={20} /> Find Movies
