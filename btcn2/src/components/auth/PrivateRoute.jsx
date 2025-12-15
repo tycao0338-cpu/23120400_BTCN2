@@ -1,35 +1,46 @@
 import { Navigate, Outlet } from "react-router-dom";
-
-/**
- * Check if user is authenticated by checking localStorage token
- */
-const isAuthenticated = () => {
-    return !!localStorage.getItem("authToken");
-};
+import { useAuth } from "../../contexts/AuthContext";
+import { LoadingSpinner } from "../common/LoadingSpinner";
 
 /**
  * PrivateRoute - Bảo vệ các route cần đăng nhập
- * - Token exists: Render child components (Outlet)
- * - Token NOT exists: Redirect to /auth
+ * - Sử dụng AuthContext để check authentication
+ * - Show loading khi đang check initial auth
+ * - Redirect to /auth nếu chưa login
  */
 export function PrivateRoute() {
-    if (!isAuthenticated()) {
-        return <Navigate to="/auth" replace />;
-    }
-    return <Outlet />;
+  const { isAuthenticated, isLoading } = useAuth();
+
+  // Show loading while checking auth
+  if (isLoading) {
+    return <LoadingSpinner message="Checking authentication..." />;
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  return <Outlet />;
 }
 
 /**
  * GuestRoute - Chỉ cho phép guest (chưa đăng nhập)
- * - Token exists: Redirect to / (Home)
- * - Token NOT exists: Render child components (Outlet)
- * Dùng để ngăn user đã login truy cập trang Auth
+ * - Sử dụng AuthContext để check authentication
+ * - Redirect to / nếu đã login
  */
 export function GuestRoute() {
-    if (isAuthenticated()) {
-        return <Navigate to="/" replace />;
-    }
-    return <Outlet />;
+  const { isAuthenticated, isLoading } = useAuth();
+
+  // Show loading while checking auth
+  if (isLoading) {
+    return <LoadingSpinner message="Loading..." />;
+  }
+
+  if (isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
+
+  return <Outlet />;
 }
 
 export default PrivateRoute;

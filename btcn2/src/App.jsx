@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
 import { MainLayout } from "./layouts/MainLayout";
 import { Home } from "./pages/Home";
 import { Search } from "./pages/Search";
@@ -19,31 +20,32 @@ import "./App.css";
 function App() {
   return (
     <BrowserRouter>
-      <div className="max-w-[1200px] mx-auto w-full">
-        <Routes>
-          {/* Public Routes - MainLayout với Outlet */}
-          <Route path="/" element={<MainLayout />}>
-            {/* Public - Accessible to everyone */}
-            <Route index element={<Home />} />
-            <Route path="search" element={<Search />} />
-            <Route path="movie/:id" element={<MovieDetail />} />
-            <Route path="person/:id" element={<PersonDetail />} />
+      <AuthProvider>
+        <div className="max-w-[1200px] mx-auto w-full">
+          <Routes>
+            {/* Public Routes - MainLayout với Outlet */}
+            <Route path="/" element={<MainLayout />}>
+              {/* Public - Accessible to everyone */}
+              <Route index element={<Home />} />
+              <Route path="search" element={<Search />} />
+              <Route path="movie/:id" element={<MovieDetail />} />
+              <Route path="person/:id" element={<PersonDetail />} />
 
-            {/* Guest Only Routes - chỉ cho user chưa đăng nhập */}
-            <Route element={<GuestRoute />}>
-              <Route path="auth" element={<Auth />} />
-            </Route>
+              {/* Guest Only Routes - chỉ cho user chưa đăng nhập */}
+              <Route element={<GuestRoute />}>
+                <Route path="auth" element={<Auth />} />
+              </Route>
 
-            {/* Private Routes - cần đăng nhập */}
-            <Route element={<PrivateRoute />}>
-              <Route path="favorites" element={<Favorites />} />
+              {/* Private Routes - cần đăng nhập */}
+              <Route element={<PrivateRoute />}>
+                <Route path="favorites" element={<Favorites />} />
+              </Route>
             </Route>
-          </Route>
-        </Routes>
-      </div>
+          </Routes>
+        </div>
+      </AuthProvider>
     </BrowserRouter>
   );
 }
 
 export default App;
-

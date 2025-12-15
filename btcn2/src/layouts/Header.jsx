@@ -1,37 +1,25 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { NavBar } from "./NavBar";
 import { useTheme } from "../hooks/useTheme";
+import { useAuth } from "../contexts/AuthContext";
 import { logoutUser } from "../services/api";
-import { Moon, Sun, User, Heart, LogOut } from "lucide-react";
+import { Moon, Sun, Heart, LogOut } from "lucide-react";
 
 /**
  * Header - Layout component containing top bar and navigation
  * - Guest: Login/Register buttons
  * - User: Avatar dropdown với My Profile, My Favorites, Logout
+ * - Sử dụng AuthContext để quản lý user state
  * Located in: src/layouts/ (theo README structure)
  */
 export function Header() {
   const { isDark, toggleTheme } = useTheme();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  // User state from localStorage
-  const [user, setUser] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [toast, setToast] = useState(null);
   const dropdownRef = useRef(null);
-
-  // Check localStorage for user on mount
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (e) {
-        console.error("Error parsing user:", e);
-      }
-    }
-  }, []);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -61,10 +49,8 @@ export function Header() {
       console.error("Logout API error:", err);
     }
 
-    // Clear localStorage regardless of API result
-    localStorage.removeItem("authToken");
-    localStorage.removeItem("user");
-    setUser(null);
+    // Use context logout (clears state + localStorage)
+    logout();
     setDropdownOpen(false);
 
     // Show toast notification
