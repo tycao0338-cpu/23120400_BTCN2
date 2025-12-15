@@ -33,7 +33,7 @@ export function MovieSlider({ title, movies = [], isLoading = false }) {
                 }}
                 className="w-full"
             >
-                <CarouselContent className="-ml-4">
+                <CarouselContent className="-ml-4 py-8 overflow-visible">
                     {isLoading ? (
                         // Loading skeleton
                         Array.from({ length: 6 }).map((_, i) => (
