@@ -8,7 +8,8 @@ import {
 import { ReviewItem } from "../components/review/ReviewItem";
 import { Pagination } from "../components/common/Pagination";
 import { BackButton } from "../components/common/BackButton";
-import { Heart, Star, Film, User, Loader } from "lucide-react";
+import { FavoriteButton } from "../components/common/FavoriteButton";
+import { Star, Film, User } from "lucide-react";
 
 /**
  * MovieDetail - Trang chi tiết phim
@@ -192,34 +193,24 @@ export function MovieDetail() {
           <div className="flex-1">
             {/* Title, Favorite & Rating */}
             <div className="flex items-start justify-between mb-3">
+              <h1 className="text-2xl md:text-3xl font-bold dark:text-white">
+                {movie.title}
+              </h1>
               <div className="flex items-center gap-3">
-                <h1 className="text-2xl md:text-3xl font-bold dark:text-white">
-                  {movie.title}
-                </h1>
                 {/* Favorite Button */}
-                <button
+                <FavoriteButton
+                  isFavorite={isFavorite}
+                  isLoading={favoriteLoading}
                   onClick={handleToggleFavorite}
-                  disabled={favoriteLoading}
-                  className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-slate-600 transition-colors disabled:opacity-50"
-                  title={
-                    isFavorite ? "Remove from favorites" : "Add to favorites"
-                  }
-                >
-                  {favoriteLoading ? (
-                    <Loader size={24} className="animate-spin text-gray-500" />
-                  ) : isFavorite ? (
-                    <Heart size={24} className="text-red-500 fill-red-500" />
-                  ) : (
-                    <Heart size={24} className="text-gray-400" />
-                  )}
-                </button>
+                />
+                {/* Rating */}
+                {movie.rating && (
+                  <div className="flex items-center gap-1 text-yellow-500 text-lg">
+                    <Star size={20} className="fill-yellow-500" />
+                    <span className="font-bold">{movie.rating}</span>
+                  </div>
+                )}
               </div>
-              {movie.rating && (
-                <div className="flex items-center gap-1 text-yellow-500 text-lg">
-                  <Star size={20} className="fill-yellow-500" />
-                  <span className="font-bold">{movie.rating}</span>
-                </div>
-              )}
             </div>
 
             {/* Release Date & Runtime */}
