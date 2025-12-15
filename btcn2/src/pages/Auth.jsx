@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerUser, loginUser } from "../services/api";
 import { loginSchema, registerSchema } from "../lib/schemas";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../hooks/useAuth";
 import { ArrowLeft } from "lucide-react";
 
 /**

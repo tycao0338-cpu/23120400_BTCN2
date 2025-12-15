@@ -1,22 +1,13 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect } from "react";
 
 /**
  * AuthContext - Quản lý authentication state toàn app
  * Cung cấp: user, login, logout, isAuthenticated
+ *
+ * Note: useAuth hook được tách ra hooks/useAuth.js để tránh Fast Refresh warning
  */
 
 const AuthContext = createContext(null);
-
-/**
- * Custom hook để sử dụng AuthContext
- */
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
-}
 
 /**
  * AuthProvider - Wrap app để cung cấp auth state
