@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useTheme } from "../hooks/useTheme";
 import { useAuth } from "../hooks/useAuth";
 import { logoutUser } from "../services/api";
-import { Moon, Sun, Heart, LogOut } from "lucide-react";
+import { Moon, Sun, Heart, LogOut, User } from "lucide-react";
 
 /**
  * Header - Layout component containing top bar and navigation
@@ -60,11 +60,6 @@ export function Header() {
     navigate("/");
   };
 
-  // Get user initials
-  const getInitials = (name) => {
-    if (!name) return "U";
-    return name.charAt(0).toUpperCase();
-  };
 
   return (
     <header className="sticky top-0 z-50 w-full">
@@ -114,7 +109,7 @@ export function Header() {
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 className="w-8 h-8 rounded-full bg-sky-600 hover:bg-sky-700 flex items-center justify-center text-white font-medium text-sm transition-colors"
               >
-                {getInitials(user.username)}
+                <User size={18} />
               </button>
 
               {/* Dropdown Menu */}

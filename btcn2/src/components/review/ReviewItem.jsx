@@ -18,6 +18,7 @@ export function ReviewItem({
   isSpoiler = false,
 }) {
   const [isRevealed, setIsRevealed] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   // Format date
   const formattedDate = date
@@ -91,13 +92,36 @@ export function ReviewItem({
 
       {/* Review Content - With Spoiler Blur */}
       <div className="relative">
-        <p
-          className={`text-gray-600 dark:text-gray-400 text-sm leading-relaxed transition-all duration-300 ${
-            shouldBlur ? "blur-sm select-none" : ""
-          }`}
-        >
-          {content}
-        </p>
+        {(() => {
+          const maxLength = 300;
+          const isLong = content && content.length > maxLength;
+          const displayContent =
+            isLong && !isExpanded
+              ? content.substring(0, maxLength) + "..."
+              : content;
+
+          return (
+            <>
+              <p
+                className={`text-gray-600 dark:text-gray-400 text-sm leading-relaxed transition-all duration-300 ${
+                  shouldBlur ? "blur-sm select-none" : ""
+                }`}
+              >
+                {displayContent}
+              </p>
+
+              {/* Show More/Less Button */}
+              {isLong && !shouldBlur && (
+                <button
+                  onClick={() => setIsExpanded(!isExpanded)}
+                  className="mt-2 text-sky-500 hover:text-sky-600 dark:text-sky-400 dark:hover:text-sky-300 text-sm font-medium transition-colors"
+                >
+                  {isExpanded ? "Show less" : "Show more"}
+                </button>
+              )}
+            </>
+          );
+        })()}
 
         {/* Reveal Button Overlay */}
         {shouldBlur && (
