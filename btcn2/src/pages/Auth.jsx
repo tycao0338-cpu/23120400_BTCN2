@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerUser, loginUser } from "../services/api";
 import { loginSchema, registerSchema } from "../lib/schemas";
 import { useAuth } from "../hooks/useAuth";
-import { ArrowLeft } from "lucide-react";
+import { BackButton } from "../components/common/BackButton";
 
 /**
  * Auth - Trang đăng nhập và đăng ký
@@ -102,14 +102,7 @@ export function Auth() {
     <main className="flex-1 bg-gradient-to-br from-sky-100 via-indigo-50 to-purple-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 transition-colors flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Back to Home */}
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-white transition-colors mb-6"
-        >
-          <ArrowLeft size={18} />
-          <span>Back to Home</span>
-        </Link>
-
+        <BackButton to="/" label="Back to Home" className="mb-6" />
         {/* Auth Card - Glassmorphism */}
         <div className="bg-white/80 dark:bg-slate-800/90 backdrop-blur-md rounded-2xl shadow-xl overflow-hidden border border-white/20 dark:border-slate-700">
           {/* Tabs - Gradient */}

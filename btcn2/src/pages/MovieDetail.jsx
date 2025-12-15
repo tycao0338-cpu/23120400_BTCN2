@@ -7,7 +7,8 @@ import {
 } from "../services/api";
 import { ReviewItem } from "../components/review/ReviewItem";
 import { Pagination } from "../components/common/Pagination";
-import { ArrowLeft, Heart, Star, Film, User, Loader } from "lucide-react";
+import { BackButton } from "../components/common/BackButton";
+import { Heart, Star, Film, User, Loader } from "lucide-react";
 
 /**
  * MovieDetail - Trang chi tiết phim
@@ -129,13 +130,7 @@ export function MovieDetail() {
   if (error) {
     return (
       <main className="flex-1 bg-gray-100 dark:bg-slate-800 transition-colors p-4">
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors mb-4"
-        >
-          <ArrowLeft size={20} />
-          <span>Back</span>
-        </button>
+        <BackButton className="mb-4" />
         <div className="text-center py-16">
           <div className="text-6xl mb-4">❌</div>
           <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
@@ -151,13 +146,7 @@ export function MovieDetail() {
   if (!movie) {
     return (
       <main className="flex-1 bg-gray-100 dark:bg-slate-800 transition-colors p-4">
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors mb-4"
-        >
-          <span className="text-xl">←</span>
-          <span>Back</span>
-        </button>
+        <BackButton className="mb-4" />
         <div className="text-center py-16">
           <Film size={64} className="mx-auto mb-4 text-gray-400" />
           <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
@@ -175,13 +164,7 @@ export function MovieDetail() {
     <main className="flex-1 bg-gray-100 dark:bg-slate-800 transition-colors">
       {/* Back Button */}
       <div className="p-4">
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
-        >
-          <span className="text-xl">←</span>
-          <span>Back</span>
-        </button>
+        <BackButton />
       </div>
 
       {/* Hero Section - Poster + Info */}
